@@ -10,7 +10,19 @@ import {
   GREETING,
 } from '@/lib/config';
 
-export function ChatKitPanel() {
+type ChatKitPanelProps = {
+  onProfilesLoad: (agentIds: string[]) => Promise<{
+    success: boolean;
+    count?: number;
+    error?: string;
+  }>;
+  onThreadChange?: () => void;
+};
+
+export function ChatKitPanel({
+  onProfilesLoad,
+  onThreadChange,
+}: ChatKitPanelProps) {
   const [composerPlaceholder, setComposerPlaceholder] = useState(PLACEHOLDER_INPUT);
   const BUSY_PLACEHOLDER = 'Hang tight, the assistant is responding…';
 
@@ -35,6 +47,14 @@ export function ChatKitPanel() {
         enabled: false,
       },
     },
+    onClientTool: async (invocation) => {
+      if(invocation.name === 'display_agent_profiles') {
+        const agentIds = invocation.params.agent_ids;
+        return await onProfilesLoad(agentIds);
+      }
+      return { success: false };
+    },
+
     onResponseStart: () => {
       setBusy(true);
     },
@@ -43,6 +63,7 @@ export function ChatKitPanel() {
     },
     onThreadChange: () => {
       setBusy(false);
+      onThreadChange?.(); // Clear profiles on new thread
     },
     onError: ({ error }) => {
       console.error('ChatKit error', error);
