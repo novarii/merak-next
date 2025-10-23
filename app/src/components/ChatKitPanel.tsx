@@ -17,11 +17,13 @@ type ChatKitPanelProps = {
     error?: string;
   }>;
   onThreadChange?: () => void;
+  onSearchAnimationToggle?: (active: boolean) => void;
 };
 
 export function ChatKitPanel({
   onProfilesLoad,
   onThreadChange,
+  onSearchAnimationToggle,
 }: ChatKitPanelProps) {
   const [composerPlaceholder, setComposerPlaceholder] = useState(PLACEHOLDER_INPUT);
   const BUSY_PLACEHOLDER = 'Hang tight, the assistant is responding…';
@@ -48,6 +50,12 @@ export function ChatKitPanel({
       },
     },
     onClientTool: async (invocation) => {
+      if (invocation.name === 'run_search_animation') {
+        const active = Boolean(invocation.params?.active);
+        onSearchAnimationToggle?.(active);
+        return { success: true };
+      }
+
       if(invocation.name === 'display_agent_profiles') {
         const agentIds = invocation.params.agent_ids;
         return await onProfilesLoad(agentIds);
@@ -63,11 +71,13 @@ export function ChatKitPanel({
     },
     onThreadChange: () => {
       setBusy(false);
+      onSearchAnimationToggle?.(false);
       onThreadChange?.(); // Clear profiles on new thread
     },
     onError: ({ error }) => {
       console.error('ChatKit error', error);
       setBusy(false);
+      onSearchAnimationToggle?.(false);
     },
   });
 

@@ -1,9 +1,18 @@
 'use client';
 
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ChatKitPanel } from '@/components/ChatKitPanel';
+import { SearchProgressCarousel } from '@/components/SearchProgressCarousel';
 import { useAgentProfiles } from '@/hooks/useAgentProfiles';
+import { SEARCH_STATUS_PHRASES } from '@/lib/searchStatusPhrases';
+
+const MIN_LOADER_VISIBLE_MS = 2000;
 
 export default function HomePage() {
+  const [isSearchAnimating, setIsSearchAnimating] = useState(false);
+  const [showSearchLoader, setShowSearchLoader] = useState(false);
+  const loaderTimeoutRef = useRef<number | null>(null);
+  const loaderStartRef = useRef<number | null>(null);
   const {
     profiles,
     loading,
@@ -11,6 +20,43 @@ export default function HomePage() {
     loadProfiles,
     clearProfiles,
   } = useAgentProfiles();
+
+  const handleSearchAnimationToggle = useCallback((active: boolean) => {
+    setIsSearchAnimating(active);
+  }, []);
+
+  const handleThreadChange = useCallback(() => {
+    setIsSearchAnimating(false);
+    clearProfiles();
+  }, [clearProfiles]);
+
+  useEffect(() => {
+    if (isSearchAnimating) {
+      if (loaderTimeoutRef.current !== null) {
+        window.clearTimeout(loaderTimeoutRef.current);
+        loaderTimeoutRef.current = null;
+      }
+      loaderStartRef.current = performance.now();
+      setShowSearchLoader(true);
+    } else {
+      const startedAt = loaderStartRef.current ?? performance.now();
+      const elapsed = performance.now() - startedAt;
+      const remaining = Math.max(MIN_LOADER_VISIBLE_MS - elapsed, 0);
+
+      loaderTimeoutRef.current = window.setTimeout(() => {
+        setShowSearchLoader(false);
+        loaderTimeoutRef.current = null;
+        loaderStartRef.current = null;
+      }, remaining + 300);
+    }
+
+    return () => {
+      if (loaderTimeoutRef.current !== null) {
+        window.clearTimeout(loaderTimeoutRef.current);
+        loaderTimeoutRef.current = null;
+      }
+    };
+  }, [isSearchAnimating]);
 
   const formatLabel = (value: string) =>
     value
@@ -25,7 +71,8 @@ export default function HomePage() {
           <div className="sticky top-10 h-[88vh] overflow-hidden rounded-3xl border border-slate-200/60 bg-white shadow-xl ring-1 ring-slate-200/60">
             <ChatKitPanel
               onProfilesLoad={loadProfiles}
-              onThreadChange={clearProfiles}
+              onThreadChange={handleThreadChange}
+              onSearchAnimationToggle={handleSearchAnimationToggle}
             />
           </div>
         </aside>
@@ -39,8 +86,20 @@ export default function HomePage() {
             </p>
           </header>
 
-          <div className="space-y-4 rounded-3xl border border-slate-200/60 bg-white/75 p-8 shadow-lg">
-            {loading ? (
+          <div
+            className="space-y-4 rounded-3xl border border-slate-200/60 bg-white/75 p-8 shadow-lg"
+            aria-busy={showSearchLoader}
+          >
+            {showSearchLoader ? (
+              <div className="py-12">
+                <SearchProgressCarousel
+                  phrases={SEARCH_STATUS_PHRASES}
+                  isActive={isSearchAnimating}
+                />
+              </div>
+            ) : null}
+
+            {!showSearchLoader && loading ? (
               <p className="text-sm text-slate-500">Loading profiles…</p>
             ) : null}
 
@@ -50,13 +109,13 @@ export default function HomePage() {
               </p>
             ) : null}
 
-            {!loading && !error && profiles.length === 0 ? (
+            {!showSearchLoader && !loading && !error && profiles.length === 0 ? (
               <p className="text-sm text-slate-500">
                 Start a conversation to see matching agent profiles.
               </p>
             ) : null}
 
-            {profiles.map((profile) => {
+            {!showSearchLoader && profiles.map((profile) => {
               const formattedRate =
                 profile.base_rate !== null
                   ? `$${profile.base_rate.toLocaleString(undefined, {
