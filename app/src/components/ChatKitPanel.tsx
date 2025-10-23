@@ -288,9 +288,14 @@ export function ChatKitPanel({
       }
     },
     onClientTool: async (invocation) => {
-      if(invocation.name === 'display_agent_profiles') {
+      if (invocation.name === 'display_agent_profiles') {
         const agentIds = invocation.params.agent_ids;
         return await onProfilesLoad(agentIds);
+      }
+      if (invocation.name === 'search_waiting_for_confirmation') {
+        console.log('[ChatKitPanel] search_waiting_for_confirmation invoked');
+        onSearchAnimationToggle?.(true);
+        return { success: true };
       }
       return { success: false };
     },

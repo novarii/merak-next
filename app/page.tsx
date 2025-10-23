@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ChatKitPanel } from '@/components/ChatKitPanel';
 import { SearchProgressCarousel } from '@/components/SearchProgressCarousel';
 import { useAgentProfiles } from '@/hooks/useAgentProfiles';
@@ -32,7 +32,7 @@ export default function HomePage() {
     clearProfiles();
   }, [clearProfiles]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isSearchAnimating) {
       console.log('[HomePage] loader requested ON');
       if (loaderTimeoutRef.current !== null) {
