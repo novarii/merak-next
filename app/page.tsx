@@ -1,150 +1,125 @@
 'use client';
 
-import { ChatKitPanel } from '@/components/ChatKitPanel';
-import { useAgentProfiles } from '@/hooks/useAgentProfiles';
+import { FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function HomePage() {
-  const {
-    profiles,
-    loading,
-    error,
-    loadProfiles,
-    clearProfiles,
-  } = useAgentProfiles();
+export default function LandingPage() {
+  const router = useRouter();
+  const [message, setMessage] = useState('');
 
-  const formatLabel = (value: string) =>
-    value
-      .replace(/[-_]/g, ' ')
-      .replace(/\b\w/g, (char) => char.toUpperCase());
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    router.push('/login');
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-slate-200">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl gap-6 px-6 py-10">
-        {/* Left Column: ChatKit */}
-        <aside className="w-full max-w-md flex-none">
-          <div className="sticky top-10 h-[88vh] overflow-hidden rounded-3xl border border-slate-200/60 bg-white shadow-xl ring-1 ring-slate-200/60">
-            <ChatKitPanel
-              onProfilesLoad={loadProfiles}
-              onThreadChange={clearProfiles}
-            />
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-950 text-white">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.25),_transparent_55%)]" />
+
+      <header className="relative border-b border-white/10">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
+          <div className="flex items-center gap-3 text-sm font-semibold tracking-wide uppercase text-white/80">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-400/20 text-emerald-200">
+              M
+            </span>
+            Merak
           </div>
-        </aside>
-
-        {/* Right Column: Recommended Agents */}
-        <main className="flex-1">
-          <header className="mb-8">
-            <h1 className="text-3xl font-semibold text-slate-900">Recommended Agents</h1>
-            <p className="mt-2 text-sm text-slate-600">
-              Review agent profiles surfaced during your conversations.
-            </p>
-          </header>
-
-          <div className="space-y-4 rounded-3xl border border-slate-200/60 bg-white/75 p-8 shadow-lg">
-            {loading ? (
-              <p className="text-sm text-slate-500">Loading profiles…</p>
-            ) : null}
-
-            {error ? (
-              <p className="text-sm text-rose-500">
-                Unable to load agent profiles: {error}
-              </p>
-            ) : null}
-
-            {!loading && !error && profiles.length === 0 ? (
-              <p className="text-sm text-slate-500">
-                Start a conversation to see matching agent profiles.
-              </p>
-            ) : null}
-
-            {profiles.map((profile) => {
-              const formattedRate =
-                profile.base_rate !== null
-                  ? `$${profile.base_rate.toLocaleString(undefined, {
-                      maximumFractionDigits: 0,
-                    })}/hr`
-                  : '—';
-              const formattedSuccess =
-                profile.success_rate !== null
-                  ? `${profile.success_rate.toFixed(0)}%`
-                  : '—';
-              const experienceLabel =
-                profile.experience_years !== null ? `${profile.experience_years} yrs` : '—';
-
-              return (
-                <article
-                  key={profile.id}
-                  className="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-sm"
+          <nav aria-label="Primary navigation">
+            <ul className="flex items-center gap-6 text-sm text-slate-200">
+              <li>
+                <a className="transition hover:text-white" href="#marketplace">
+                  Marketplace
+                </a>
+              </li>
+              <li>
+                <a className="transition hover:text-white" href="#about">
+                  About Us
+                </a>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => router.push('/login')}
+                  className="rounded-full border border-white/15 px-3 py-1.5 text-sm font-medium text-white transition hover:border-white/40 hover:bg-white/5"
                 >
-                  <header className="flex flex-col gap-2">
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <h2 className="text-lg font-semibold text-slate-900">{profile.name}</h2>
-                        {profile.tagline ? (
-                          <p className="text-sm text-slate-600">{profile.tagline}</p>
-                        ) : null}
-                      </div>
-                      <dl className="text-right text-xs uppercase tracking-wide text-slate-500">
-                        <dt className="font-medium text-slate-400">Agent Type</dt>
-                        <dd className="font-semibold text-slate-900">
-                          {formatLabel(profile.agent_type)}
-                        </dd>
-                      </dl>
-                    </div>
+                  Log In
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
 
-                    <div className="flex flex-wrap gap-2 text-xs font-medium text-slate-600">
-                      <span className="rounded-full bg-slate-100 px-3 py-1">
-                        {formatLabel(profile.availability)}
-                      </span>
-                      {profile.industry ? (
-                        <span className="rounded-full bg-slate-100 px-3 py-1">
-                          {profile.industry}
-                        </span>
-                      ) : null}
-                    </div>
-                  </header>
-
-                  {profile.description ? (
-                    <p className="mt-4 text-sm text-slate-600">{profile.description}</p>
-                  ) : null}
-
-                  <dl className="mt-4 grid grid-cols-3 gap-4 text-sm text-slate-600">
-                    <div>
-                      <dt className="font-medium text-slate-500">Base Rate</dt>
-                      <dd className="font-semibold text-slate-900">{formattedRate}</dd>
-                    </div>
-                    <div>
-                      <dt className="font-medium text-slate-500">Success Rate</dt>
-                      <dd className="font-semibold text-slate-900">{formattedSuccess}</dd>
-                    </div>
-                    <div>
-                      <dt className="font-medium text-slate-500">Experience</dt>
-                      <dd className="font-semibold text-slate-900">{experienceLabel}</dd>
-                    </div>
-                  </dl>
-
-                  {profile.languages.length ? (
-                    <div className="mt-4">
-                      <h3 className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                        Languages
-                      </h3>
-                      <ul className="mt-2 flex flex-wrap gap-2">
-                        {profile.languages.map((language) => (
-                          <li
-                            key={language}
-                            className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
-                          >
-                            {language}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
-                </article>
-              );
-            })}
+      <main className="relative flex flex-1 flex-col">
+        <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center gap-16 px-6 py-16 lg:flex-row lg:items-center">
+          <div className="space-y-8 text-center lg:basis-1/2 lg:text-left">
+            <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+              <span className="block text-slate-200">The</span>
+              <span className="block bg-gradient-to-r from-emerald-300 via-emerald-200 to-white bg-clip-text text-transparent">
+                Intelligent
+              </span>
+              <span className="block text-slate-200">Layer</span>
+            </h1>
+            <p className="text-lg text-slate-300">
+              Find, compare, and connect with the AI-native tools that fit you. Build your adaptive
+              research stack in minutes.
+            </p>
+            <div className="flex flex-wrap gap-3 text-sm text-slate-400">
+              <span className="rounded-full border border-white/10 px-4 py-2">Curated agents</span>
+              <span className="rounded-full border border-white/10 px-4 py-2">
+                Intelligent comparison
+              </span>
+              <span className="rounded-full border border-white/10 px-4 py-2">Instant insights</span>
+            </div>
           </div>
-        </main>
-      </div>
+
+          <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/60 p-6 shadow-2xl backdrop-blur">
+            <header className="space-y-1 border-b border-white/10 pb-4">
+              <p className="text-xs uppercase tracking-[0.4em] text-emerald-300/80">
+                Discover Answers
+              </p>
+              <h2 className="text-lg font-semibold text-white">Preview the Merak chat</h2>
+              <p className="text-sm text-slate-400">
+                Try a sample query and we&apos;ll guide you to sign in before showing personalized
+                results.
+              </p>
+            </header>
+
+            <div className="mt-4 space-y-3">
+              <div className="rounded-2xl border border-white/5 bg-slate-950/40 p-4 text-sm text-slate-400">
+                <p className="font-medium text-slate-200">Agent Assist</p>
+                <p className="mt-2 text-slate-400">
+                  Ask about integrations, pricing, or best-fit workflows. We&apos;ll route you to the
+                  right tools.
+                </p>
+              </div>
+
+              <form className="space-y-3" onSubmit={handleSubmit}>
+                <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  Sample Prompt
+                </label>
+                <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-slate-950/60 p-4">
+                  <textarea
+                    className="min-h-[96px] w-full resize-none border-0 bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-0"
+                    value={message}
+                    onChange={(event) => setMessage(event.target.value)}
+                    placeholder="“I need an agent that can monitor my competitor’s launch plans and push updates into Notion.”"
+                  />
+                  <div className="flex items-center justify-between text-xs text-slate-500">
+                    <span>{message.length} / 240</span>
+                    <button
+                      type="submit"
+                      className="inline-flex items-center gap-2 rounded-full bg-emerald-400 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-emerald-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-200"
+                    >
+                      Search
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
