@@ -2,9 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ChatKitPanel } from '@/components/ChatKitPanel';
-import { SearchProgressCarousel } from '@/components/SearchProgressCarousel';
 import { useAgentProfiles } from '@/hooks/useAgentProfiles';
-import { SEARCH_STATUS_PHRASES } from '@/lib/searchStatusPhrases';
 
 const MIN_LOADER_VISIBLE_MS = 2000;
 
@@ -91,11 +89,8 @@ export default function HomePage() {
             aria-busy={showSearchLoader}
           >
             {showSearchLoader ? (
-              <div className="py-12">
-                <SearchProgressCarousel
-                  phrases={SEARCH_STATUS_PHRASES}
-                  isActive={isSearchAnimating}
-                />
+              <div className="py-12 text-center text-sm font-medium text-slate-600">
+                Stalling...
               </div>
             ) : null}
 
