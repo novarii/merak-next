@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'www.figma.com',
+        pathname: '/api/mcp/asset/**',
+      },
+    ],
+  },
   async rewrites() {
     const backendTarget = process.env.BACKEND_URL || 'http://127.0.0.1:8000';
     return [

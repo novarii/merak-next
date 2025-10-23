@@ -1,125 +1,200 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import type { ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import localFont from 'next/font/local';
+
+const saprona = localFont({
+  display: 'swap',
+  variable: '--font-saprona',
+  src: [
+    { path: '../public/fonts/Saprona-Regular.woff2', weight: '400', style: 'normal' },
+    { path: '../public/fonts/Saprona-Medium.woff2', weight: '500', style: 'normal' },
+    { path: '../public/fonts/Saprona-SemiBold.woff2', weight: '600', style: 'normal' },
+  ],
+});
+
+const typewriterPhrases = [
+  'hire your new accountant',
+  'hire your new personal assistant',
+  'hire your new researcher',
+  'hire your new teacher',
+];
+const promptPrefix = 'Ask Merak to ';
+const quickLinks = ['Accountant', 'Customer Support', 'Writing Assistant', 'Researcher'];
 
 export default function LandingPage() {
-  const router = useRouter();
-  const [message, setMessage] = useState('');
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    router.push('/login');
-  };
-
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-950 text-white">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.25),_transparent_55%)]" />
+    <div
+      className={`relative flex min-h-screen flex-col overflow-hidden bg-white text-neutral-900 ${saprona.variable}`}
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-20 bg-gradient-to-b from-white via-[#f6f2f3] to-[#420f1a]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 opacity-30"
+        style={{
+          backgroundImage:
+            'linear-gradient(0deg, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)',
+          backgroundSize: '80px 80px',
+          backgroundPosition: 'center',
+        }}
+      />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-white/10 backdrop-blur-sm" />
 
-      <header className="relative border-b border-white/10">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
-          <div className="flex items-center gap-3 text-sm font-semibold tracking-wide uppercase text-white/80">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-400/20 text-emerald-200">
-              M
-            </span>
-            Merak
-          </div>
-          <nav aria-label="Primary navigation">
-            <ul className="flex items-center gap-6 text-sm text-slate-200">
+      <header className="relative z-20">
+        <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-8">
+          <a href="/" className="inline-flex items-center" aria-label="Merak home">
+            <Image
+              alt="Merak logo"
+              height={55}
+              width={132}
+              priority
+              src="https://www.figma.com/api/mcp/asset/e234a2bc-e29a-47eb-9aa5-f20bc1047758"
+            />
+          </a>
+          <nav aria-label="Primary">
+            <ul
+              className="nav__links flex items-center gap-10 text-[20px] font-semibold tracking-[0.01em] text-[#1d1d1d]"
+              style={{ fontFamily: 'var(--font-saprona)' }}
+            >
               <li>
-                <a className="transition hover:text-white" href="#marketplace">
+                <a className="transition hover:text-[#01224d]" href="#marketplace">
                   Marketplace
                 </a>
               </li>
               <li>
-                <a className="transition hover:text-white" href="#about">
+                <a className="transition hover:text-[#01224d]" href="#about">
                   About Us
                 </a>
               </li>
               <li>
-                <button
-                  type="button"
-                  onClick={() => router.push('/login')}
-                  className="rounded-full border border-white/15 px-3 py-1.5 text-sm font-medium text-white transition hover:border-white/40 hover:bg-white/5"
-                >
+                <a className="transition hover:text-[#01224d]" href="#login">
                   Log In
-                </button>
+                </a>
               </li>
             </ul>
           </nav>
         </div>
       </header>
 
-      <main className="relative flex flex-1 flex-col">
-        <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center gap-16 px-6 py-16 lg:flex-row lg:items-center">
-          <div className="space-y-8 text-center lg:basis-1/2 lg:text-left">
-            <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-              <span className="block text-slate-200">The</span>
-              <span className="block bg-gradient-to-r from-emerald-300 via-emerald-200 to-white bg-clip-text text-transparent">
-                Intelligent
-              </span>
-              <span className="block text-slate-200">Layer</span>
-            </h1>
-            <p className="text-lg text-slate-300">
-              Find, compare, and connect with the AI-native tools that fit you. Build your adaptive
-              research stack in minutes.
-            </p>
-            <div className="flex flex-wrap gap-3 text-sm text-slate-400">
-              <span className="rounded-full border border-white/10 px-4 py-2">Curated agents</span>
-              <span className="rounded-full border border-white/10 px-4 py-2">
-                Intelligent comparison
-              </span>
-              <span className="rounded-full border border-white/10 px-4 py-2">Instant insights</span>
+      <main className="relative z-10 flex flex-1 flex-col">
+        <section className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col items-center px-6 pb-24 pt-[54px] text-center md:pt-[54px] lg:pt-[54px]">
+          <div className="flex flex-col items-center gap-6 text-center">
+            <div className="relative flex flex-col items-center">
+              <h1
+                className="mx-auto max-w-3xl text-[48px] font-semibold leading-[1.2] text-[#1d1d1d] sm:text-[56px] md:text-[60px] lg:text-[65px]"
+                style={{ fontFamily: 'var(--font-saprona)' }}
+              >
+                <span>The </span>
+                <span
+                  style={{
+                    backgroundImage: 'linear-gradient(0deg, #b60d0a 15%, #01224d 72%)',
+                    color: 'transparent',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  Intelligent
+                </span>
+                <span> Layer</span>
+              </h1>
             </div>
+            <p
+              className="max-w-[700px] text-[20px] leading-[1.35] text-[#5b5b5b] sm:text-[21px] md:text-[22px]"
+              style={{ fontFamily: 'var(--font-saprona)' }}
+            >
+              Find, compare, and connect with the tools that fit you.
+            </p>
           </div>
 
-          <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/60 p-6 shadow-2xl backdrop-blur">
-            <header className="space-y-1 border-b border-white/10 pb-4">
-              <p className="text-xs uppercase tracking-[0.4em] text-emerald-300/80">
-                Discover Answers
-              </p>
-              <h2 className="text-lg font-semibold text-white">Preview the Merak chat</h2>
-              <p className="text-sm text-slate-400">
-                Try a sample query and we&apos;ll guide you to sign in before showing personalized
-                results.
-              </p>
-            </header>
+          <PromptCard />
 
-            <div className="mt-4 space-y-3">
-              <div className="rounded-2xl border border-white/5 bg-slate-950/40 p-4 text-sm text-slate-400">
-                <p className="font-medium text-slate-200">Agent Assist</p>
-                <p className="mt-2 text-slate-400">
-                  Ask about integrations, pricing, or best-fit workflows. We&apos;ll route you to the
-                  right tools.
-                </p>
-              </div>
-
-              <form className="space-y-3" onSubmit={handleSubmit}>
-                <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  Sample Prompt
-                </label>
-                <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-slate-950/60 p-4">
-                  <textarea
-                    className="min-h-[96px] w-full resize-none border-0 bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-0"
-                    value={message}
-                    onChange={(event) => setMessage(event.target.value)}
-                    placeholder="“I need an agent that can monitor my competitor’s launch plans and push updates into Notion.”"
-                  />
-                  <div className="flex items-center justify-between text-xs text-slate-500">
-                    <span>{message.length} / 240</span>
-                    <button
-                      type="submit"
-                      className="inline-flex items-center gap-2 rounded-full bg-emerald-400 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-emerald-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-200"
-                    >
-                      Search
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
+          <div className="mt-16 flex flex-wrap items-center justify-center gap-4">
+            {quickLinks.map((label) => (
+              <span
+                key={label}
+                className="rounded-full border border-black/60 bg-[#b76c79] px-6 py-2 text-[18px] font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]"
+                style={{ fontFamily: 'var(--font-saprona)' }}
+              >
+                {label}
+              </span>
+            ))}
           </div>
         </section>
       </main>
+    </div>
+  );
+}
+
+function PromptCard() {
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [typedLength, setTypedLength] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [message, setMessage] = useState('');
+  const currentPhrase = typewriterPhrases[phraseIndex];
+  const typedPhrase = currentPhrase.slice(0, typedLength);
+  const placeholder = `${promptPrefix}${typedPhrase}`;
+
+  useEffect(() => {
+    const updateSpeed = isDeleting ? 60 : 110;
+    const shouldHold = !isDeleting && typedLength === currentPhrase.length;
+    const holdDuration = 1400;
+
+    const timer = window.setTimeout(() => {
+      if (!isDeleting && typedLength < currentPhrase.length) {
+        setTypedLength((prev) => prev + 1);
+        return;
+      }
+
+      if (!isDeleting && typedLength === currentPhrase.length) {
+        setIsDeleting(true);
+        return;
+      }
+
+      if (isDeleting && typedLength > 0) {
+        setTypedLength((prev) => prev - 1);
+        return;
+      }
+
+      setIsDeleting(false);
+      setPhraseIndex((prev) => (prev + 1) % typewriterPhrases.length);
+    }, shouldHold ? holdDuration : updateSpeed);
+
+    return () => window.clearTimeout(timer);
+  }, [currentPhrase, isDeleting, typedLength]);
+
+  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(event.target.value);
+  };
+
+  return (
+    <div className="relative mt-14 w-full max-w-[680px] rounded-[36px] border border-black bg-white px-6 py-6 shadow-[0_24px_60px_rgba(54,17,25,0.18)] backdrop-blur-sm">
+      <label className="sr-only" htmlFor="prompt-input">
+        Ask Merak anything
+      </label>
+      <textarea
+        id="prompt-input"
+        className="h-32 w-full resize-none rounded-[28px] border-none bg-white px-4 pb-16 pt-3 text-left text-[18px] text-[#3a2f33] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] outline-none placeholder:text-[#7b6d71] focus:outline-none focus:ring-2 focus:ring-[#1d1d1d]/20"
+        placeholder={placeholder}
+        value={message}
+        onChange={handleChange}
+        autoComplete="off"
+        spellCheck={false}
+        aria-label="Chat prompt"
+        style={{ fontFamily: 'var(--font-saprona)' }}
+      />
+      <button
+        type="button"
+        className="absolute bottom-6 right-6 inline-flex items-center justify-center rounded-full border border-black bg-black px-5 py-2 text-sm font-medium uppercase tracking-wide text-white transition hover:bg-[#1d1d1d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+        style={{ fontFamily: 'var(--font-saprona)' }}
+      >
+        Search
+      </button>
     </div>
   );
 }

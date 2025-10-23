@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 
@@ -6,6 +7,11 @@ export const metadata: Metadata = {
   title: 'Marketing Assistant',
   description: 'AI-powered marketing assistant',
 };
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export default function RootLayout({
   children,
@@ -19,12 +25,8 @@ export default function RootLayout({
           src="https://cdn.platform.openai.com/deployments/chatkit/chatkit.js"
           strategy="beforeInteractive"
         />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
       </head>
-      <body>{children}</body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
