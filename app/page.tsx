@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ChatKitPanel } from '@/components/ChatKitPanel';
+import { SearchProgressCarousel } from '@/components/SearchProgressCarousel';
 import { useAgentProfiles } from '@/hooks/useAgentProfiles';
+import { SEARCH_STATUS_PHRASES } from '@/lib/searchStatusPhrases';
 
 const MIN_LOADER_VISIBLE_MS = 2000;
 
@@ -19,6 +21,8 @@ export default function HomePage() {
     clearProfiles,
   } = useAgentProfiles();
 
+  const loaderForced = false;
+
   const handleSearchAnimationToggle = useCallback((active: boolean) => {
     setIsSearchAnimating(active);
   }, []);
@@ -30,6 +34,7 @@ export default function HomePage() {
 
   useEffect(() => {
     if (isSearchAnimating) {
+      console.log('[HomePage] loader requested ON');
       if (loaderTimeoutRef.current !== null) {
         window.clearTimeout(loaderTimeoutRef.current);
         loaderTimeoutRef.current = null;
@@ -37,6 +42,7 @@ export default function HomePage() {
       loaderStartRef.current = performance.now();
       setShowSearchLoader(true);
     } else {
+      console.log('[HomePage] loader requested OFF');
       const startedAt = loaderStartRef.current ?? performance.now();
       const elapsed = performance.now() - startedAt;
       const remaining = Math.max(MIN_LOADER_VISIBLE_MS - elapsed, 0);
@@ -55,6 +61,15 @@ export default function HomePage() {
       }
     };
   }, [isSearchAnimating]);
+
+  const loaderVisible = loaderForced ? true : showSearchLoader;
+  const carouselActive = loaderForced ? true : loaderVisible;
+
+  useEffect(() => {
+    if (loaderVisible) {
+      console.log('[HomePage] search progress carousel visible');
+    }
+  }, [loaderVisible]);
 
   const formatLabel = (value: string) =>
     value
@@ -86,15 +101,15 @@ export default function HomePage() {
 
           <div
             className="space-y-4 rounded-3xl border border-slate-200/60 bg-white/75 p-8 shadow-lg"
-            aria-busy={showSearchLoader}
+            aria-busy={loaderVisible}
           >
-            {showSearchLoader ? (
-              <div className="py-12 text-center text-sm font-medium text-slate-600">
-                Stalling...
+            {loaderVisible ? (
+              <div className="py-12">
+                <SearchProgressCarousel phrases={SEARCH_STATUS_PHRASES} isActive={carouselActive} />
               </div>
             ) : null}
 
-            {!showSearchLoader && loading ? (
+            {!loaderVisible && loading ? (
               <p className="text-sm text-slate-500">Loading profiles…</p>
             ) : null}
 
@@ -104,13 +119,13 @@ export default function HomePage() {
               </p>
             ) : null}
 
-            {!showSearchLoader && !loading && !error && profiles.length === 0 ? (
+            {!loaderVisible && !loading && !error && profiles.length === 0 ? (
               <p className="text-sm text-slate-500">
                 Start a conversation to see matching agent profiles.
               </p>
             ) : null}
 
-            {!showSearchLoader && profiles.map((profile) => {
+            {!loaderVisible && profiles.map((profile) => {
               const formattedRate =
                 profile.base_rate !== null
                   ? `$${profile.base_rate.toLocaleString(undefined, {

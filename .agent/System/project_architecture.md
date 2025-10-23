@@ -5,14 +5,16 @@ Deliver a lightweight marketing assistant UI that embeds OpenAI’s ChatKit expe
 
 ## High-Level Flow
 1. A user loads `app/page.tsx`, which renders the gradient layout together with the `ChatKitPanel` component.
-2. `ChatKitPanel` (in `app/src/components/ChatKitPanel.tsx`) initializes `useChatKit`, wiring placeholder messaging and response hooks to control the composer state.
+2. `ChatKitPanel` (in `app/src/components/ChatKitPanel.tsx`) initializes `useChatKit`, wiring placeholder messaging, response hooks, and search-animation streaming handlers.
 3. ChatKit SDK calls are routed to the local API proxy at `app/api/chatkit/route.ts`.
 4. The proxy forwards supported events (`threads.create`, `threads.add_user_message`) to the upstream service specified by `BACKEND_URL`, streaming responses back to the ChatKit UI.
 
 ## Module Layout
 - `app/layout.tsx`: App Router shell with metadata, global fonts, and body styling.
 - `app/page.tsx`: Landing surface showing the ChatKit panel and the agent profiles sidebar hydrated via client tools.
-- `app/src/components/ChatKitPanel.tsx`: Configures the ChatKit widget, busy-state handling, and disables attachments.
+- `app/src/components/ChatKitPanel.tsx`: Configures the ChatKit widget, busy-state handling, disables attachments, and taps the `/chatkit` SSE stream (via a guarded `fetch` interceptor) to surface `progress_update` markers that drive the search loader.
+- `app/src/components/SearchProgressCarousel.tsx`: Animated loader that cycles branded status phrases while a search is running. Honors `prefers-reduced-motion` and pauses when hidden.
+- `app/src/lib/searchStatusPhrases.ts`: Central list of copy used by the search loader.
 - `app/src/lib/config.ts`: Centralizes environment-driven constants such as `CHATKIT_API_URL`, domain key, greeting text, starter prompts, and composer placeholder.
 - `app/src/lib/supabaseServer.ts`: Memoizes a Supabase service-role client for server-side data fetching.
 - `app/api/chatkit/route.ts`: Serverless proxy that validates ChatKit actions before relaying them upstream.
@@ -29,7 +31,8 @@ Deliver a lightweight marketing assistant UI that embeds OpenAI’s ChatKit expe
 ## Runtime & Integration Details
 - Chat API Proxy: `app/api/chatkit/route.ts` accepts POST requests, enforces supported action types, and forwards bodies to `${BACKEND_URL}/chatkit`.
 - Agent Profiles API: `app/api/agents/route.ts` validates requested agent IDs, queries Supabase via `getServiceSupabaseClient`, and returns profile details to the ChatKit client tool.
-- Streaming: Responses are streamed back via `new Response(resp.body, ...)` to preserve real-time updates expected by ChatKit.
+- Streaming: Responses are streamed back via `new Response(resp.body, ...)` to preserve real-time updates expected by ChatKit. The client duplicates the SSE stream to listen for `progress_update` events and toggles the loader when the backend emits `search_animation:start|stop`.
+- Client Tooling: The backend still issues `display_agent_profiles` client tool calls; `useAgentProfiles` posts to `/api/agents` and hydrates the sidebar.
 - Error Handling: Unsupported actions return HTTP 400; UI errors log to the console through `onError` to surface failures during development.
 - Import Resolution: `tsconfig.json` defines `@/*` pointing at `app/src/*`; rely on this alias instead of long relative paths.
 
@@ -47,10 +50,12 @@ Deliver a lightweight marketing assistant UI that embeds OpenAI’s ChatKit expe
 - Ensure the platform supports Next.js Edge/Node runtime with streaming fetch responses.
 - Provide environment variables securely (e.g., Vercel project settings). Never commit `.env` files; keep sample configuration in `.env.local.sample` if one is added.
 
-## Future Considerations
+## Known Gaps & Future Considerations
 - Populate the listings column with actual data or CMS integrations.
 - Introduce automated tests (React Testing Library for UI, integration tests for the proxy route) to guard regressions.
+- Trim or gate the development-only streaming logs before production.
 - Expand SOP documentation for recurring tasks like adding API routes or configuring new prompts.
+- Investigate the intermittent ChatKit `Maximum update depth exceeded` warning; see `.agent/Tasks/task-search-animation-followup.md` for reproduction context.
 
 ## Related Docs
 - `.agent/README.md`

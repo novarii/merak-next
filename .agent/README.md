@@ -4,9 +4,13 @@ Use this directory to grasp the system quickly and track ongoing work. Start her
 
 ## Directory Guide
 - `system/`
-  - `project_architecture.md` — current state of the Next.js + ChatKit application, including flow, integrations, and deployment notes.
-- `tasks/` — add PRDs and implementation plans per feature (not yet populated).
-- `sop/` — document repeatable procedures such as adding routes, configuring env vars, or shipping releases.
+  - `project_architecture.md` — current state of the Next.js + ChatKit application, including flow, integrations, streaming search animation handling, and deployment notes.
+- `tasks/`
+  - `task-search-tool-loading-animation.md` — implementation plan for the branded search loader.
+  - `task-search-animation-refractor.md` — migration notes for consuming ChatKit SSE progress markers.
+  - `task-search-animation-followup.md` — open investigation into loader visibility and ChatKit stream edge cases.
+  - `TODO.md` — backlog scratchpad for upcoming work.
+- `sop/`
   - `chatkit-runtime-setup.md` — steps to load the ChatKit runtime script so the UI renders and proxies function.
 
 ## Getting Started Checklist
@@ -21,3 +25,7 @@ Use this directory to grasp the system quickly and track ongoing work. Start her
 
 ## Related Docs
 - `.agent/system/project_architecture.md`
+- `.agent/tasks/task-search-tool-loading-animation.md`
+- `.agent/tasks/task-search-animation-refractor.md`
+- `.agent/tasks/task-search-animation-followup.md`
+- `.agent/sop/chatkit-runtime-setup.md`
