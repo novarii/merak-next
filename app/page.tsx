@@ -3,6 +3,7 @@
 import type { ChangeEvent } from 'react';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import localFont from 'next/font/local';
 
 const saprona = localFont({
@@ -72,9 +73,9 @@ export default function LandingPage() {
                 </a>
               </li>
               <li>
-                <a className="transition hover:text-[#01224d]" href="#login">
+                <Link className="transition hover:text-[#01224d]" href="/login">
                   Log In
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>
@@ -188,13 +189,13 @@ function PromptCard() {
         aria-label="Chat prompt"
         style={{ fontFamily: 'var(--font-saprona)' }}
       />
-      <button
-        type="button"
+      <Link
+        href="/login"
         className="absolute bottom-6 right-6 inline-flex items-center justify-center rounded-full border border-black bg-black px-5 py-2 text-sm font-medium uppercase tracking-wide text-white transition hover:bg-[#1d1d1d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
         style={{ fontFamily: 'var(--font-saprona)' }}
       >
         Search
-      </button>
+      </Link>
     </div>
   );
 }
