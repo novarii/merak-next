@@ -2,8 +2,47 @@
 @import 'tailwindcss';
 @reference 'tailwindcss/utilities';
 
+@font-face {
+  font-family: 'Saprona';
+  src: url('/fonts/Saprona-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Saprona';
+  src: url('/fonts/Saprona-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Saprona';
+  src: url('/fonts/Saprona-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --color-text-primary: #1d1d1d;
+  --color-text-muted: rgba(29, 29, 29, 0.75);
+  --gradient-accent-start: #b60d0a;
+  --gradient-accent-end: #01224d;
+  --font-family-primary: 'Saprona', 'Georgia', serif;
+  --font-size-h1: 65px;
+  --font-size-h2: 60px;
+  --font-size-h3: 45px;
+  --font-size-h4: 35px;
+  --font-size-h5: 22px;
+  --font-size-body: 18px;
+}
+
 @layer base {
   body {
-    @apply m-0 min-h-screen font-sans antialiased bg-white text-slate-900;
+    font-family: var(--font-family-primary);
+    @apply m-0 min-h-screen antialiased bg-white text-slate-900;
   }
 }
