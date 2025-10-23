@@ -1,12 +1,18 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 
 export interface AgentProfile {
-  agent_id: string;
+  id: string;
   name: string;
-  role: string;
-  hourly_rate: number;
+  tagline: string | null;
+  description: string | null;
+  base_rate: number | null;
+  success_rate: number | null;
+  experience_years: number | null;
   availability: string;
-  industry_tags: string[];
+  industry: string | null;
+  agent_type: string;
+  languages: string[];
+  created_at: string;
 }
 
 export function useAgentProfiles() {
@@ -24,9 +30,9 @@ export function useAgentProfiles() {
     setError(null);
 
     try {
-      const response = await fetch("/api/agents", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/agents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ agentIds }),
       });
 
@@ -35,20 +41,27 @@ export function useAgentProfiles() {
       }
 
       const data = await response.json();
-      setProfiles(data.profiles || []);
-      
-      return { 
-        success: true, 
-        count: data.profiles?.length || 0 
+      const nextProfiles: AgentProfile[] = Array.isArray(data.profiles)
+        ? data.profiles.map((profile: AgentProfile) => ({
+            ...profile,
+            languages: Array.isArray(profile.languages) ? profile.languages : [],
+          }))
+        : [];
+
+      setProfiles(nextProfiles);
+
+      return {
+        success: true,
+        count: nextProfiles.length,
       };
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to load profiles";
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load profiles';
       setError(errorMessage);
       setProfiles([]);
-      
-      return { 
-        success: false, 
-        error: errorMessage 
+
+      return {
+        success: false,
+        error: errorMessage,
       };
     } finally {
       setLoading(false);

@@ -11,10 +11,12 @@ Deliver a lightweight marketing assistant UI that embeds OpenAI’s ChatKit expe
 
 ## Module Layout
 - `app/layout.tsx`: App Router shell with metadata, global fonts, and body styling.
-- `app/page.tsx`: Landing surface showing the ChatKit panel and placeholder listings column.
+- `app/page.tsx`: Landing surface showing the ChatKit panel and the agent profiles sidebar hydrated via client tools.
 - `app/src/components/ChatKitPanel.tsx`: Configures the ChatKit widget, busy-state handling, and disables attachments.
 - `app/src/lib/config.ts`: Centralizes environment-driven constants such as `CHATKIT_API_URL`, domain key, greeting text, starter prompts, and composer placeholder.
+- `app/src/lib/supabaseServer.ts`: Memoizes a Supabase service-role client for server-side data fetching.
 - `app/api/chatkit/route.ts`: Serverless proxy that validates ChatKit actions before relaying them upstream.
+- `app/api/agents/route.ts`: Looks up detailed agent profiles in Supabase when the client tool requests them.
 - `app/globals.css`: Tailwind layer directives plus base body styles.
 
 ## Tech Stack & Tooling
@@ -26,6 +28,7 @@ Deliver a lightweight marketing assistant UI that embeds OpenAI’s ChatKit expe
 
 ## Runtime & Integration Details
 - Chat API Proxy: `app/api/chatkit/route.ts` accepts POST requests, enforces supported action types, and forwards bodies to `${BACKEND_URL}/chatkit`.
+- Agent Profiles API: `app/api/agents/route.ts` validates requested agent IDs, queries Supabase via `getServiceSupabaseClient`, and returns profile details to the ChatKit client tool.
 - Streaming: Responses are streamed back via `new Response(resp.body, ...)` to preserve real-time updates expected by ChatKit.
 - Error Handling: Unsupported actions return HTTP 400; UI errors log to the console through `onError` to surface failures during development.
 - Import Resolution: `tsconfig.json` defines `@/*` pointing at `app/src/*`; rely on this alias instead of long relative paths.
@@ -33,10 +36,11 @@ Deliver a lightweight marketing assistant UI that embeds OpenAI’s ChatKit expe
 ## Environment & Configuration
 - Required server variable: `BACKEND_URL` (defaults to `http://127.0.0.1:8000`), pointing to the upstream ChatKit-compatible backend.
 - Optional public overrides: `NEXT_PUBLIC_CHATKIT_API_URL` and `NEXT_PUBLIC_CHATKIT_API_DOMAIN_KEY` (client-side safe), falling back to `/chatkit` and `domain_pk_localhost_dev`.
+- Supabase server variables: `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` must be provided for the agent profile lookup route.
 - Local fonts are loaded via Google Fonts in `app/layout.tsx`; ensure network access when running locally.
 
 ## Data & Persistence
-There is no database layer. The app relies entirely on the upstream ChatKit backend for conversation management and persists nothing locally.
+- Supabase is queried server-side for agent profile enrichment. The service-role key stays on the server; profile data is streamed to the UI through the `/api/agents` route.
 
 ## Deployment Notes
 - Production builds should execute `npm run build` followed by `npm run start`.
