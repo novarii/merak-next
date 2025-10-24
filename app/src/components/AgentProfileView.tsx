@@ -102,9 +102,6 @@ export function AgentProfileView({ profile, onBack }: AgentProfileViewProps) {
               </div>
 
               <div className="flex flex-1 flex-col gap-2">
-                <span className="text-xs font-semibold uppercase tracking-wide text-[#344e71]/80">
-                  ID: {profile.id}
-                </span>
                 <h2 className="text-3xl font-semibold text-[#011f46]">{profile.name}</h2>
                 {profile.tagline ? (
                   <p className="text-lg font-medium text-[#344e71]">{profile.tagline}</p>
@@ -118,7 +115,6 @@ export function AgentProfileView({ profile, onBack }: AgentProfileViewProps) {
 
             <div className="flex flex-none flex-col items-end gap-2 text-right">
               <p className="text-2xl font-semibold text-[#011f46]">{priceLabel}</p>
-              <p className="text-sm text-[#011f46]/70">Monthly engagement</p>
               {profile.success_rate !== null ? (
                 <p className="text-sm font-semibold text-emerald-600">
                   {profile.success_rate.toFixed(0)}% client success rate
@@ -133,7 +129,7 @@ export function AgentProfileView({ profile, onBack }: AgentProfileViewProps) {
         <dl className="grid gap-4 rounded-2xl border border-[#bfbfbf]/70 bg-white p-6 text-sm text-[#011f46]/80 sm:grid-cols-2 lg:grid-cols-3">
           <div>
             <dt className="font-semibold text-[#01224d]">Availability</dt>
-            <dd className="mt-1">{profile.availability}</dd>
+            <dd className="mt-1">{formatLabel(profile.availability)}</dd>
           </div>
           <div>
             <dt className="font-semibold text-[#01224d]">Industry Focus</dt>
@@ -159,23 +155,26 @@ export function AgentProfileView({ profile, onBack }: AgentProfileViewProps) {
           </div>
         </dl>
 
-        {videoSrc ? (
-          <div className="overflow-hidden rounded-2xl shadow-sm">
-            <div className="aspect-video">
-              <iframe
-                src={videoSrc}
-                title={`${profile.name} demo video`}
-                className="h-full w-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              />
+        <section className="space-y-3">
+          <h3 className="text-xl font-semibold text-[#01224d]">Demo Video</h3>
+          {videoSrc ? (
+            <div className="overflow-hidden rounded-2xl shadow-sm">
+              <div className="aspect-video">
+                <iframe
+                  src={videoSrc}
+                  title={`${profile.name} demo video`}
+                  className="h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="flex aspect-video w-full items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-100 text-sm text-[#01224d]/60">
-            Demo video coming soon
-          </div>
-        )}
+          ) : (
+            <div className="flex aspect-video w-full items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-100 text-sm text-[#01224d]/60">
+              Demo video coming soon
+            </div>
+          )}
+        </section>
 
         <section className="space-y-3">
           <h3 className="text-xl font-semibold text-[#01224d]">Full Description</h3>
