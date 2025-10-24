@@ -1,63 +1,81 @@
 # Project Architecture
 
 ## Project Goal
-Deliver a lightweight marketing assistant UI that embeds OpenAI’s ChatKit experience inside a Next.js 15 app. The app lets users converse with the upstream assistant while providing a scaffold for future listing-management features.
+Deliver a Supabase-authenticated marketing assistant where users converse with OpenAI’s ChatKit through a controlled Next.js 15 frontend. The app keeps Redis conversations isolated per user while surfacing curated agent recommendations from Supabase.
 
 ## High-Level Flow
-1. A user loads `app/page.tsx`, which renders the gradient layout together with the `ChatKitPanel` component.
-2. `ChatKitPanel` (in `app/src/components/ChatKitPanel.tsx`) initializes `useChatKit`, wiring placeholder messaging and response hooks to control the composer state.
-3. ChatKit SDK calls are routed to the local API proxy at `app/api/chatkit/route.ts`.
-4. The proxy forwards supported events (`threads.create`, `threads.add_user_message`) to the upstream service specified by `BACKEND_URL`, streaming responses back to the ChatKit UI.
+1. Visitors land on the marketing page (`app/page.tsx`), which renders global chrome and session-aware navigation.
+2. Authenticated users open the chat route (`app/chat/page.tsx`). If they are not signed in, Supabase redirects them to `/login`.
+3. `ChatKitPanel` (`app/src/components/ChatKitPanel.tsx`) initializes the ChatKit SDK, injects the user’s Supabase access token, restores the saved `threadId`, and mounts the chat UI.
+4. ChatKit posts actions to `/chatkit`, handled by the App Router route `app/api/chatkit/route.ts`.
+5. The proxy forwards supported ChatKit actions to `${BACKEND_URL}/chatkit`, includes the `Authorization` header, and streams upstream responses back to the browser.
+6. Client tool invocations (e.g., `display_agent_profiles`) call `/api/agents`, which fetches rich agent details from Supabase using a service-role key.
+7. Thread updates trigger `onThreadChange`, which persists the new thread identifier locally and refreshes the recommended agent feed.
 
-## Module Layout
-- `app/layout.tsx`: App Router shell with metadata, global fonts, and body styling.
-- `app/page.tsx`: Landing surface showing the ChatKit panel and the agent profiles sidebar hydrated via client tools.
-- `app/src/components/ChatKitPanel.tsx`: Configures the ChatKit widget, busy-state handling, and disables attachments.
-- `app/src/lib/config.ts`: Centralizes environment-driven constants such as `CHATKIT_API_URL`, domain key, greeting text, starter prompts, and composer placeholder.
-- `app/src/lib/supabaseServer.ts`: Memoizes a Supabase service-role client for server-side data fetching.
-- `app/src/lib/supabaseBrowserClient.ts`: Provides a singleton browser Supabase client using the anon key.
-- `app/src/lib/supabaseServerAuthClient.ts`: Creates an SSR-aware Supabase client tied to Next.js cookies for session checks.
-- `app/api/chatkit/route.ts`: Serverless proxy that validates ChatKit actions before relaying them upstream.
-- `app/api/agents/route.ts`: Looks up detailed agent profiles in Supabase when the client tool requests them.
-- `app/login/page.tsx`: Minimal authentication screen supporting email magic links and Google sign-in via Supabase, with sign-in/sign-up toggle.
-- `app/profile/page.tsx`: Placeholder authenticated surface that confirms the signed-in user.
-- `app/page.tsx`: Landing surface that now checks Supabase session state to swap the header CTA between “Log In” and “Profile”.
-- `app/auth/callback/route.ts`: Exchanges Supabase OAuth codes for a session and redirects back to the app.
-- `app/globals.css`: Tailwind layer directives plus base body styles.
+## Module Overview
+- **App shell**
+  - `app/layout.tsx`: App Router wrapper loading fonts, the ChatKit runtime script, and global Tailwind layers.
+  - `app/globals.css`: Tailwind reset plus baseline body and typography styles.
 
-## Tech Stack & Tooling
-- Framework: Next.js 15 (App Router) with React 19 and TypeScript strict mode.
-- Styling: Tailwind CSS 4 with utility-first classes and a custom `Inter` font stack.
-- UI SDK: `@openai/chatkit-react` for the assistant interface.
-- Linting: ESLint via `npm run lint` (Next.js shared configuration).
-- Build / Runtime Scripts: `next dev`, `next build`, `next start` exposed through npm scripts.
+- **Marketing & navigation**
+  - `app/page.tsx`: Marketing landing page that reuses `SiteHeader` to toggle the CTA between “Log In” and “Profile”.
+  - `app/src/components/SiteHeader.tsx`: Header/CTA component that renders navigation links and uses `deriveAccountNavigation` for session-aware labels.
+  - `app/src/lib/accountNavigation.ts`: Helper that maps Supabase sessions to header destinations.
 
-## Runtime & Integration Details
-- Chat API Proxy: `app/api/chatkit/route.ts` accepts POST requests, enforces supported action types, and forwards bodies to `${BACKEND_URL}/chatkit`.
-- Agent Profiles API: `app/api/agents/route.ts` validates requested agent IDs, queries Supabase via `getServiceSupabaseClient`, and returns profile details to the ChatKit client tool.
-- Streaming: Responses are streamed back via `new Response(resp.body, ...)` to preserve real-time updates expected by ChatKit.
-- Error Handling: Unsupported actions return HTTP 400; UI errors log to the console through `onError` to surface failures during development.
-- Import Resolution: `tsconfig.json` defines `@/*` pointing at `app/src/*`; rely on this alias instead of long relative paths.
+- **Authentication**
+  - `app/login/page.tsx`: Email magic-link and OAuth sign-in form backed by the Supabase browser client.
+  - `app/auth/callback/route.ts`: Finalizes OAuth logins and redirects users back into the app.
+  - `app/profile/page.tsx`: Minimal authenticated surface exposing a `SignOutButton`.
+  - `app/profile/SignOutButton.tsx`: Client component that signs out via `supabase.auth.signOut()` and returns the user to `/login`.
+  - `app/src/lib/supabaseBrowserClient.ts`: Singleton Supabase browser client created with `NEXT_PUBLIC_SUPABASE_*` vars.
+  - `app/src/lib/supabaseServerAuthClient.ts`: Cookie-aware Supabase client for server components and route handlers.
 
-## Environment & Configuration
-- Required server variable: `BACKEND_URL` (defaults to `http://127.0.0.1:8000`), pointing to the upstream ChatKit-compatible backend.
-- Optional public overrides: `NEXT_PUBLIC_CHATKIT_API_URL` and `NEXT_PUBLIC_CHATKIT_API_DOMAIN_KEY` (client-side safe), falling back to `/chatkit` and `domain_pk_localhost_dev`.
-- Supabase public variables: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` bootstrap browser auth flows and server-side session checks.
-- Supabase server variables: `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` must be provided for the agent profile lookup route and server-side auth helpers.
-- Local fonts are loaded via Google Fonts in `app/layout.tsx`; ensure network access when running locally.
+- **Chat experience**
+  - `app/chat/page.tsx`: Primary chat surface combining the sticky `ChatKitPanel` and the recommended agent feed driven by `useAgentProfiles`.
+  - `app/src/components/ChatKitPanel.tsx`: ChatKit integration that:
+    - Restores/persists `threadId` per Supabase user via `localStorage` (`chatkit:thread:user:{user_id}`).
+    - Injects the Supabase `Authorization` header into every ChatKit request.
+    - Manages busy-state placeholders and displays overlays for re-authentication or load failures.
+    - Clears agent profiles when the active thread changes.
+  - `app/src/hooks/useAgentProfiles.tsx`: Fetches agent IDs emitted by ChatKit and hydrates profile cards.
+  - `app/src/components/AgentProfileCard.tsx`: Presentational card for agent metadata.
+
+- **APIs & data access**
+  - `app/api/chatkit/route.ts`: Validates ChatKit payloads, forwards them upstream, and preserves the bearer token for backend verification.
+  - `app/api/agents/route.ts`: Fetches agent details from Supabase using the service-role client (`app/src/lib/supabaseServer.ts`).
+  - `app/src/lib/supabaseServer.ts`: Memoized Supabase service-role client for server-only data access.
+
+## Authentication & Thread Binding
+- Supabase Auth manages sessions across login, chat, and profile routes. Server routes call `createSupabaseServerClient` to protect authenticated paths.
+- `ChatKitPanel` requests the current session in the browser, wrapping ChatKit’s fetch transport to add `Authorization: Bearer <access_token>` to every request.
+- 401 responses from the backend trigger a blocking overlay prompting users to sign in again.
+- Thread IDs are stored per user in `localStorage`. On mount the panel restores the saved `threadId`, invokes `chatkit.setThreadId`, and keeps Redis namespaces aligned (`chat:user:{user_id}:thread:{thread_id}:*`).
 
 ## Data & Persistence
-- Supabase is queried server-side for agent profile enrichment. The service-role key stays on the server; profile data is streamed to the UI through the `/api/agents` route.
+- **Supabase (Postgres)**: Stores agent metadata surfaced by the recommended agent sidebar.
+- **Redis (backend)**: Holds ChatKit conversation state, namespaced by Supabase `user_id` and `thread_id`. The frontend does not talk to Redis directly but ensures consistent identifiers so the backend can scope data correctly.
 
-## Deployment Notes
-- Production builds should execute `npm run build` followed by `npm run start`.
-- Ensure the platform supports Next.js Edge/Node runtime with streaming fetch responses.
-- Provide environment variables securely (e.g., Vercel project settings). Never commit `.env` files; keep sample configuration in `.env.local.sample` if one is added.
+## Environment & Configuration
+- `BACKEND_URL` (server): Base URL for the FastAPI (or compatible) ChatKit backend proxy.
+- `NEXT_PUBLIC_CHATKIT_API_URL`, `NEXT_PUBLIC_CHATKIT_API_DOMAIN_KEY` (client): Optional overrides for ChatKit SDK configuration, defaulting to `/chatkit` and `domain_pk_localhost_dev`.
+- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (client): Required for browser auth.
+- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (server): Allow server routes to query Supabase.
+- `SUPABASE_JWT_SECRET` (backend): Used by the upstream FastAPI service to validate access tokens when JWKS fetch is unavailable (e.g., local development).
+- All `NEXT_PUBLIC_*` environment variables are inlined at build time; avoid accessing `process.env` directly in the browser console.
+
+## Build, Test, and Tooling
+- `npm run dev`: Start the Next.js dev server on `http://localhost:3000`.
+- `npm run lint`: Run ESLint (Next.js configuration).
+- `npm run build` / `npm run start`: Produce and serve a production bundle.
+- Tailwind CSS powers styling; class names live alongside components.
 
 ## Future Considerations
-- Populate the listings column with actual data or CMS integrations.
-- Introduce automated tests (React Testing Library for UI, integration tests for the proxy route) to guard regressions.
-- Expand SOP documentation for recurring tasks like adding API routes or configuring new prompts.
+- Emit durable thread metadata to Supabase instead of `localStorage` once production persistence is required.
+- Add automated tests for the ChatKit proxy, token injection, and agent profile fetch path.
+- Expand the profile page with richer account settings and billing management.
+- Introduce middleware to auto-refresh Supabase sessions for long-lived chat tabs.
 
 ## Related Docs
 - `.agent/README.md`
+- `.agent/SOP/chatkit-thread-binding.md`
+- `.agent/SOP/chatkit-runtime-setup.md`

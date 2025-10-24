@@ -10,10 +10,13 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: 'Unsupported action' }, { status: 400 });
   }
 
+  const authorization = req.headers.get('authorization') ?? undefined;
+
   const resp = await fetch(`${upstream}/chatkit`, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
+      ...(authorization ? { authorization } : {}),
       // copy any auth headers you rely on
     },
     body: JSON.stringify(body),

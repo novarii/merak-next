@@ -5,9 +5,10 @@ Use this directory to grasp the system quickly and track ongoing work. Start her
 ## Directory Guide
 - `system/`
   - `project_architecture.md` — current state of the Next.js + ChatKit application, including flow, integrations, and deployment notes.
-- `tasks/` — add PRDs and implementation plans per feature (not yet populated).
+- `tasks/` — PRDs and implementation plans for shipped or in-flight features.
 - `sop/` — document repeatable procedures such as adding routes, configuring env vars, or shipping releases.
   - `chatkit-runtime-setup.md` — steps to load the ChatKit runtime script so the UI renders and proxies function.
+  - `chatkit-thread-binding.md` — explains how the frontend binds ChatKit threads to Supabase users and handles auth tokens.
 
 ## Getting Started Checklist
 1. Read `system/project_architecture.md` for an architectural overview.
