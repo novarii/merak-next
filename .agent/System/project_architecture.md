@@ -15,8 +15,11 @@ Deliver a lightweight marketing assistant UI that embeds OpenAI’s ChatKit expe
 - `app/src/components/ChatKitPanel.tsx`: Configures the ChatKit widget, busy-state handling, and disables attachments.
 - `app/src/lib/config.ts`: Centralizes environment-driven constants such as `CHATKIT_API_URL`, domain key, greeting text, starter prompts, and composer placeholder.
 - `app/src/lib/supabaseServer.ts`: Memoizes a Supabase service-role client for server-side data fetching.
+- `app/src/lib/supabaseBrowserClient.ts`: Provides a singleton browser Supabase client using the anon key.
 - `app/api/chatkit/route.ts`: Serverless proxy that validates ChatKit actions before relaying them upstream.
 - `app/api/agents/route.ts`: Looks up detailed agent profiles in Supabase when the client tool requests them.
+- `app/login/page.tsx`: Minimal authentication screen supporting email magic links and Google sign-in via Supabase.
+- `app/auth/callback/route.ts`: Exchanges Supabase OAuth codes for a session and redirects back to the app.
 - `app/globals.css`: Tailwind layer directives plus base body styles.
 
 ## Tech Stack & Tooling
@@ -36,7 +39,8 @@ Deliver a lightweight marketing assistant UI that embeds OpenAI’s ChatKit expe
 ## Environment & Configuration
 - Required server variable: `BACKEND_URL` (defaults to `http://127.0.0.1:8000`), pointing to the upstream ChatKit-compatible backend.
 - Optional public overrides: `NEXT_PUBLIC_CHATKIT_API_URL` and `NEXT_PUBLIC_CHATKIT_API_DOMAIN_KEY` (client-side safe), falling back to `/chatkit` and `domain_pk_localhost_dev`.
-- Supabase server variables: `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` must be provided for the agent profile lookup route.
+- Supabase public variables: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` bootstrap browser auth flows.
+- Supabase server variables: `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` must be provided for the agent profile lookup route and server-side auth helpers.
 - Local fonts are loaded via Google Fonts in `app/layout.tsx`; ensure network access when running locally.
 
 ## Data & Persistence

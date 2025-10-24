@@ -1,4 +1,4 @@
-// app/api/search/route.ts
+// app/api/chat/route.ts
 import { NextRequest } from 'next/server';
 
 const upstream = process.env.BACKEND_URL ?? 'http://127.0.0.1:8000';
@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: 'Unsupported action' }, { status: 400 });
   }
 
-  const resp = await fetch(`${upstream}/search`, {
+  const resp = await fetch(`${upstream}/chat`, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
