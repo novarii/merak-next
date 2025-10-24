@@ -22,13 +22,32 @@ const ICONS = {
 } as const;
 
 const typewriterPhrases = [
-  'hire your new accountant',
-  'hire your new personal assistant',
-  'hire your new researcher',
-  'hire your new teacher',
+  'hire your new SDR',
+  'hire your new data analyst',
+  'hire your new customer success agent',
+  'hire your new marketing automation specialist',
 ];
 
 const promptPrefix = 'Ask Merak to ';
+
+const quickStartButtons = [
+  {
+    label: 'Sales Development',
+    prompt: 'Find me agents that can automate outbound sales and lead qualification',
+  },
+  {
+    label: 'Customer Support',
+    prompt: 'Show me agents for automated customer support and ticketing',
+  },
+  {
+    label: 'Data Analysis',
+    prompt: 'I need agents that can analyze business data and generate reports',
+  },
+  {
+    label: 'Content Marketing',
+    prompt: 'Find agents for content creation and marketing automation',
+  },
+] as const;
 
 type IconKey = keyof typeof ICONS;
 
@@ -109,6 +128,10 @@ export const LandingChatbox = () => {
     router.push('/login');
   };
 
+  const handleQuickPrompt = (prompt: string) => {
+    setMessage(prompt);
+  };
+
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
@@ -168,12 +191,13 @@ export const LandingChatbox = () => {
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-3 md:flex-nowrap">
-          {['Researcher', 'Writing Assistant', 'Customer Support', 'Accountant'].map((label) => (
+          {quickStartButtons.map(({ label, prompt }) => (
             <button
               key={label}
               type="button"
-              className="rounded-[20px] border border-white/20 bg-white/10 px-4 py-2 text-[16px] font-medium text-[#f0f0f0] shadow-[inset_0_0_2px_rgba(240,240,240,0.8)] backdrop-blur-md transition hover:border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className="cursor-pointer rounded-[20px] border border-white/20 bg-white/10 px-4 py-2 text-[16px] font-medium text-[#f0f0f0] shadow-[inset_0_0_2px_rgba(240,240,240,0.8)] backdrop-blur-md transition hover:border-white/40 hover:bg-white/20 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               style={{ WebkitBackdropFilter: 'blur(10px)', fontFamily: 'var(--font-family-primary)' }}
+              onClick={() => handleQuickPrompt(prompt)}
             >
               {label}
             </button>
