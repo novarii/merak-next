@@ -129,7 +129,7 @@ export default function LoginPage() {
             />
           </div>
           <div className="space-y-2 text-left">
-            <h1 className="text-2xl font-semibold text-white">{heading}</h1>
+            <h1 className="text-2xl font-semibold text-white/80">{heading}</h1>
             <p className="text-sm text-white/70">{subheading}</p>
           </div>
 
@@ -144,7 +144,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 required
-                className="w-full rounded-xl border border-white/40 bg-white/10 px-4 py-3 text-sm text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] placeholder:text-white/60 focus:border-white/60 focus:outline-none focus:ring-2 focus:ring-white/40 disabled:opacity-60"
+                className="w-full rounded-xl border border-white/40 bg-white/10 px-4 py-3 text-sm text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] placeholder:text-white/60 focus:border-black/60 focus:outline-none focus:ring-2 focus:ring-black/40 disabled:opacity-60"
                 style={{
                   backdropFilter: 'blur(12px)',
                   WebkitBackdropFilter: 'blur(12px)',
@@ -157,7 +157,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center rounded-xl border border-white/30 bg-gradient-to-r from-[rgba(182,13,10,0.85)] to-[rgba(1,34,77,0.85)] px-4 py-3 text-sm font-medium text-white shadow-[0_16px_40px_rgba(0,0,0,0.25)] transition hover:from-[rgba(182,13,10,0.95)] hover:to-[rgba(1,34,77,0.95)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:opacity-60"
+              className="flex w-full items-center justify-center rounded-xl border border-white/30 bg-gradient-to-r from-[rgba(182,13,10,0.85)] to-[rgba(1,34,77,0.85)] px-4 py-3 text-sm font-medium text-white/80 shadow-[0_16px_40px_rgba(0,0,0,0.25)] transition hover:from-[rgba(182,13,10,0.95)] hover:to-[rgba(1,34,77,0.95)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:opacity-60"
             >
               {loading ? 'Sending...' : view === 'sign-in' ? 'Send magic link' : 'Send sign-up link'}
             </button>
@@ -165,7 +165,7 @@ export default function LoginPage() {
 
           <div className="relative my-4">
             <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-white/25" />
-            <span className="relative mx-auto block w-fit rounded-full border border-white/10 bg-white/10 px-3 text-xs uppercase tracking-wide text-white/70">
+            <span className="relative mx-auto block w-fit rounded-full border border-white/10 bg-white/10 px-3 text-xs uppercase tracking-wide text-black/70">
               or
             </span>
           </div>
@@ -174,7 +174,7 @@ export default function LoginPage() {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-sm font-medium text-white transition hover:border-white/50 hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-sm font-medium text-white/70 transition hover:border-white/50 hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:opacity-60"
             style={{
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
