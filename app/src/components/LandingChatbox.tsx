@@ -1,3 +1,7 @@
+"use client";
+
+import type { ChangeEvent } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 
 const ICONS = {
@@ -14,6 +18,15 @@ const ICONS = {
     alt: 'Send message',
   },
 } as const;
+
+const typewriterPhrases = [
+  'hire your new accountant',
+  'hire your new personal assistant',
+  'hire your new researcher',
+  'hire your new teacher',
+];
+
+const promptPrefix = 'Ask Merak to ';
 
 type IconKey = keyof typeof ICONS;
 
@@ -38,6 +51,55 @@ const IconButton = ({ icon, accent = false }: IconButtonProps) => {
 };
 
 export const LandingChatbox = () => {
+  const [message, setMessage] = useState('');
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [typedLength, setTypedLength] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const currentPhrase = typewriterPhrases[phraseIndex];
+  const typedPhrase = useMemo(
+    () => currentPhrase.slice(0, typedLength),
+    [currentPhrase, typedLength],
+  );
+
+  useEffect(() => {
+    if (message) {
+      return;
+    }
+
+    const updateSpeed = isDeleting ? 60 : 110;
+    const shouldHold = !isDeleting && typedLength === currentPhrase.length;
+    const holdDuration = 1400;
+
+    const timer = window.setTimeout(() => {
+      if (!isDeleting && typedLength < currentPhrase.length) {
+        setTypedLength((prev) => prev + 1);
+        return;
+      }
+
+      if (!isDeleting && typedLength === currentPhrase.length) {
+        setIsDeleting(true);
+        return;
+      }
+
+      if (isDeleting && typedLength > 0) {
+        setTypedLength((prev) => prev - 1);
+        return;
+      }
+
+      setIsDeleting(false);
+      setPhraseIndex((prev) => (prev + 1) % typewriterPhrases.length);
+    }, shouldHold ? holdDuration : updateSpeed);
+
+    return () => window.clearTimeout(timer);
+  }, [currentPhrase, isDeleting, message, typedLength]);
+
+  const placeholder = `${promptPrefix}${typedPhrase}`;
+
+  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(event.target.value);
+  };
+
   return (
     <div className="relative mx-auto w-full max-w-[720px]">
       <div
@@ -49,9 +111,20 @@ export const LandingChatbox = () => {
       >
         <div className="pointer-events-none absolute inset-0 rounded-[34px] border border-white/10" />
 
-        <p className="absolute left-8 right-8 top-8 text-lg text-[#454545]">
-          Ask Merak to hire you your new accountant...
-        </p>
+        <label className="sr-only" htmlFor="landing-chatbox-input">
+          Ask Merak anything
+        </label>
+        <textarea
+          id="landing-chatbox-input"
+          className="absolute left-8 right-8 top-6 bottom-20 resize-none border-none bg-transparent text-lg text-[#454545] outline-none placeholder:text-[#5b5b5b] focus:outline-none"
+          style={{ fontFamily: 'var(--font-family-primary)' }}
+          placeholder={message ? undefined : placeholder}
+          value={message}
+          onChange={handleChange}
+          autoComplete="off"
+          spellCheck={false}
+          aria-label="Chat prompt"
+        />
 
         <div className="absolute bottom-6 left-6 flex gap-3">
           <IconButton icon="attach" />
@@ -65,4 +138,3 @@ export const LandingChatbox = () => {
     </div>
   );
 };
-
