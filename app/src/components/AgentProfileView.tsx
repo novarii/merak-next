@@ -1,5 +1,7 @@
 import Image from 'next/image';
 
+import Link from 'next/link';
+
 import type { AgentProfile } from '@/hooks/useAgentProfiles';
 
 export interface AgentProfileViewProps {
@@ -202,10 +204,13 @@ export function AgentProfileView({ profile, onBack }: AgentProfileViewProps) {
       ) : null}
 
       <section className="grid gap-6">
-        <div className="flex flex-col justify-between rounded-2xl border border-[#01224d]/10 bg-[#f5f5f5]/90 p-6">
-          <div className="rounded-xl bg-[#01224d] px-5 py-4 text-center text-white shadow-md">
-            <button type="button" className="text-base font-semibold">Deploy Now!</button>
-          </div>
+          <div className="flex flex-col justify-between rounded-2xl border border-[#01224d]/10 bg-[#f5f5f5]/90 p-6">
+            <Link
+              href="/waitlist"
+              className="block rounded-xl bg-[#01224d] px-5 py-4 text-center text-base font-semibold text-white shadow-md transition hover:bg-[#143669]"
+            >
+              Deploy Now!
+            </Link>
           </div>
         </section>
       </section>
