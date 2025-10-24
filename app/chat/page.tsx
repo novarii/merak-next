@@ -115,19 +115,32 @@ export default function ChatPage() {
                   profile.languages[0] ?? null,
                 ].filter((value): value is string => Boolean(value));
 
-                const badges: AgentProfileBadge[] = [
-                  {
-                    id: `${profile.id}-availability`,
-                    label: formatLabel(profile.availability),
-                    tone: 'slate',
-                  },
+                const spotlightBadges: Array<{ label: string; tone: AgentProfileBadge['tone'] }> = [
+                  { label: 'Top Choice', tone: 'blue' },
+                  { label: 'Great Fit', tone: 'rose' },
+                  { label: 'Strong Match', tone: 'slate' },
                 ];
 
-                if (profile.success_rate !== null && profile.success_rate >= 85) {
-                  badges.unshift({
-                    id: `${profile.id}-top-choice`,
+                const rotationBadge = spotlightBadges[index % spotlightBadges.length];
+                const badges: AgentProfileBadge[] = [];
+
+                if (index === 0) {
+                  badges.push({
+                    id: `${profile.id}-spotlight-top-choice`,
                     label: 'Top Choice',
                     tone: 'blue',
+                  });
+                  const secondaryBadge = spotlightBadges[(index + 1) % spotlightBadges.length];
+                  badges.push({
+                    id: `${profile.id}-spotlight-secondary`,
+                    label: secondaryBadge.label,
+                    tone: secondaryBadge.tone,
+                  });
+                } else {
+                  badges.push({
+                    id: `${profile.id}-spotlight-rotation`,
+                    label: rotationBadge.label,
+                    tone: rotationBadge.tone,
                   });
                 }
 
