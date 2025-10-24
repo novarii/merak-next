@@ -62,7 +62,14 @@ export async function POST(req: NextRequest) {
         industry,
         agent_type,
         languages,
-        created_at
+        created_at,
+        endorsements (
+          id,
+          endorser_name,
+          endorser_role,
+          endorsement_text,
+          created_at
+        )
       `
       )
       .in('id', uniqueIds);
@@ -90,6 +97,15 @@ export async function POST(req: NextRequest) {
       agent_type: string;
       languages: string[] | null;
       created_at: string;
+      endorsements: RawEndorsement[] | null;
+    };
+
+    type RawEndorsement = {
+      id: string;
+      endorser_name: string;
+      endorser_role: string | null;
+      endorsement_text: string;
+      created_at: string | null;
     };
 
     const profiles = (data ?? []).map((profile: RawProfile) => ({
@@ -108,6 +124,13 @@ export async function POST(req: NextRequest) {
           : null,
       languages: Array.isArray(profile.languages) ? profile.languages : [],
       highlights: Array.isArray(profile.highlights) ? profile.highlights : [],
+      endorsements: Array.isArray(profile.endorsements)
+        ? profile.endorsements.map((endorsement) => ({
+            ...endorsement,
+            endorser_role: endorsement.endorser_role ?? null,
+            created_at: endorsement.created_at ?? null,
+          }))
+        : [],
     }));
 
     return Response.json({ profiles });

@@ -18,6 +18,15 @@ export interface AgentProfile {
   agent_type: string;
   languages: string[];
   created_at: string;
+  endorsements: AgentEndorsement[];
+}
+
+export interface AgentEndorsement {
+  id: string;
+  endorser_name: string;
+  endorser_role: string | null;
+  endorsement_text: string;
+  created_at: string | null;
 }
 
 export function useAgentProfiles() {
@@ -59,6 +68,7 @@ export function useAgentProfiles() {
               profile_img: resolvedImage,
               languages: Array.isArray(profile.languages) ? profile.languages : [],
               highlights: Array.isArray(profile.highlights) ? profile.highlights : [],
+              endorsements: Array.isArray(profile.endorsements) ? profile.endorsements : [],
             };
           })
         : [];

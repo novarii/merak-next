@@ -168,16 +168,45 @@ export function AgentProfileView({ profile, onBack }: AgentProfileViewProps) {
           )}
         </section>
 
-        <section className="space-y-3">
-          <h3 className="text-xl font-semibold text-[#01224d]">Full Description</h3>
-          <p className="text-base leading-relaxed text-[#011837]/80">{description}</p>
-        </section>
+      <section className="space-y-3">
+        <h3 className="text-xl font-semibold text-[#01224d]">Full Description</h3>
+        <p className="text-base leading-relaxed text-[#011837]/80">{description}</p>
+      </section>
 
-        <section className="grid gap-6">
-          <div className="flex flex-col justify-between rounded-2xl border border-[#01224d]/10 bg-[#f5f5f5]/90 p-6">
-            <div className="rounded-xl bg-[#01224d] px-5 py-4 text-center text-white shadow-md">
-              <button type="button" className="text-base font-semibold">Hire Now!</button>
-            </div>
+      {profile.endorsements.length ? (
+        <section className="space-y-4">
+          <h3 className="text-xl font-semibold text-[#01224d]">Endorsements</h3>
+          <ul className="space-y-4">
+            {profile.endorsements.map((endorsement) => (
+              <li
+                key={endorsement.id}
+                className="rounded-2xl border border-[#bfbfbf] bg-white p-6 shadow-sm"
+              >
+                <div className="flex items-start gap-4">
+                  <span className="mt-1 block h-10 w-1 rounded-full bg-gradient-to-b from-[#b60d0a] to-[#01224d]" />
+                  <div className="space-y-1">
+                    <p className="text-lg font-semibold text-[#01224d]">
+                      {endorsement.endorser_name}
+                    </p>
+                    {endorsement.endorser_role ? (
+                      <p className="text-xs text-[#011f46]/70">{endorsement.endorser_role}</p>
+                    ) : null}
+                  </div>
+                </div>
+                <p className="mt-4 text-sm leading-relaxed text-[#011f46]/80">
+                  “{endorsement.endorsement_text}”
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      <section className="grid gap-6">
+        <div className="flex flex-col justify-between rounded-2xl border border-[#01224d]/10 bg-[#f5f5f5]/90 p-6">
+          <div className="rounded-xl bg-[#01224d] px-5 py-4 text-center text-white shadow-md">
+            <button type="button" className="text-base font-semibold">Hire Now!</button>
+          </div>
           </div>
         </section>
       </section>
