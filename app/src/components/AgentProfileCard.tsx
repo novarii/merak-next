@@ -45,7 +45,6 @@ export function AgentProfileCard({
   specialties,
   priceLabel,
   description,
-  hiresLabel,
   avatarUrl,
   badges = [],
   isBookmarked = false,
@@ -72,7 +71,7 @@ export function AgentProfileCard({
 
     return ['High compatibility', 'Trusted by clients'];
   }, [matchHighlights, specialties]);
-  const hiresSummary = hiresLabel ?? '50+ Hires';
+  const hiresSummary = '50+ Hires';
 
   return (
     <article
@@ -84,15 +83,21 @@ export function AgentProfileCard({
       <div className="flex flex-1 flex-col justify-between p-6">
         <div className="flex flex-col items-stretch gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
           <div className="flex flex-1 flex-col items-stretch gap-4 md:flex-row md:items-stretch">
-            <div className="relative h-[78px] w-[78px] flex-shrink-0 overflow-hidden rounded-[15px] bg-[#d9d9d9]">
+            <div
+              className={`relative h-[78px] w-[78px] flex-shrink-0 overflow-hidden rounded-[15px] ${
+                avatarUrl ? '' : 'bg-[#d9d9d9]'
+              }`}
+            >
               {avatarUrl ? (
-                <Image
-                  alt={`${name} avatar`}
-                  src={avatarUrl}
-                  fill
-                  className="object-cover"
-                  sizes="80px"
-                />
+                <div className="absolute inset-[6px] overflow-hidden rounded-[12px]">
+                  <Image
+                    alt={`${name} avatar`}
+                    src={avatarUrl}
+                    fill
+                    className="object-cover"
+                    sizes="68px"
+                  />
+                </div>
               ) : null}
             </div>
 

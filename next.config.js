@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['www.figma.com'],
+    domains: ['www.figma.com', 'amtsrzlqgriywjwvtmet.supabase.co'],
     remotePatterns: [
       {
         protocol: 'https',

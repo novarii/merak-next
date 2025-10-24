@@ -41,13 +41,14 @@ export function AgentListView({ profiles, loading, error, onViewDetailsClick }: 
         {profiles.map((profile, index) => {
           const formattedRate =
             profile.base_rate !== null
-              ? `$${profile.base_rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}/hr`
+              ? `$${profile.base_rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}/mo`
               : 'Pricing on request';
 
           const specialties = [
             formatLabel(profile.agent_type),
             profile.industry ?? null,
             profile.languages[0] ?? null,
+            profile.tagline ?? null,
           ].filter((value): value is string => Boolean(value));
 
           const rotationBadge = BADGE_ROTATION[index % BADGE_ROTATION.length];
@@ -73,27 +74,22 @@ export function AgentListView({ profiles, loading, error, onViewDetailsClick }: 
             });
           }
 
-          const hiresLabel =
-            profile.success_rate !== null
-              ? `${profile.success_rate.toFixed(0)}% success rate`
-              : profile.experience_years !== null
-              ? `${profile.experience_years} years experience`
-              : undefined;
-
           const cardProps: AgentProfileCardProps = {
             name: profile.name,
             role: formatLabel(profile.agent_type),
-            creator: profile.tagline ?? 'Independent Agent',
+            creator: profile.developer ?? 'Independent Agent',
             specialties,
             priceLabel: formattedRate,
-            description: profile.description ?? undefined,
-            hiresLabel,
+            description: profile.card_description ?? undefined,
             badges,
             isBookmarked: index === 0,
             matchScore:
               profile.success_rate !== null ? Math.round(profile.success_rate) : undefined,
-            matchHighlights: specialties.slice(0, 3),
+            matchHighlights: profile.highlights.length
+              ? profile.highlights.slice(0, 3)
+              : specialties.slice(0, 3),
             onViewDetails: () => onViewDetailsClick(profile.id),
+            avatarUrl: profile.profile_img ?? undefined,
           };
 
           return <AgentProfileCard key={profile.id} {...cardProps} />;

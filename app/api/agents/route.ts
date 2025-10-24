@@ -49,7 +49,12 @@ export async function POST(req: NextRequest) {
         id,
         name,
         tagline,
-        description,
+        profile_img,
+        card_description,
+        profile_description,
+        developer,
+        highlights,
+        demo_link,
         base_rate,
         success_rate,
         experience_years,
@@ -71,7 +76,12 @@ export async function POST(req: NextRequest) {
       id: string;
       name: string;
       tagline: string | null;
-      description: string | null;
+      profile_img: string | null;
+      card_description: string | null;
+      profile_description: string | null;
+      developer: string | null;
+      highlights: string[] | null;
+      demo_link: string | null;
       base_rate: string | number | null;
       success_rate: string | number | null;
       experience_years: number | null;
@@ -97,6 +107,7 @@ export async function POST(req: NextRequest) {
           ? Number(profile.experience_years)
           : null,
       languages: Array.isArray(profile.languages) ? profile.languages : [],
+      highlights: Array.isArray(profile.highlights) ? profile.highlights : [],
     }));
 
     return Response.json({ profiles });
