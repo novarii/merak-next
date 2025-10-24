@@ -81,7 +81,7 @@ export function AgentProfileCard({
       }`}
       data-testid="agent-profile-card"
     >
-      <div className="flex flex-1 flex-col gap-2 p-6">
+      <div className="flex flex-1 flex-col justify-between p-6">
         <div className="flex flex-col items-stretch gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
           <div className="flex flex-1 flex-col items-stretch gap-4 md:flex-row md:items-stretch">
             <div className="relative h-[78px] w-[78px] flex-shrink-0 overflow-hidden rounded-[15px] bg-[#d9d9d9]">
@@ -197,18 +197,18 @@ export function AgentProfileCard({
       </div>
 
       <aside className="flex-none w-full rounded-[25px] border border-[#BFBFBF] bg-gradient-to-b from-[#01224d] to-[#b60d0a] p-6 lg:w-[200px]">
-        <div className="flex h-full flex-col items-center gap-5">
+        <div className="flex h-full flex-col items-center gap-4">
           <CircularProgress
             score={resolvedScore}
             trackColor="rgba(255,255,255,0.15)"
             progressColor="#fef3c7"
           />
-
           <div className="text-center">
-            <p className="text-xs uppercase tracking-wide text-white/70">Match Insight</p>
-            <h3 className="text-lg font-semibold text-white">Scorecard</h3>
+            <h3 className="text-lg font-semibold text-white/90">Merak's Score</h3>
           </div>
-
+          <div className="flex w-full items-center">
+            <div className="h-px flex-1 border-t border-white/30" />
+          </div>
           <ul className="flex w-full flex-col gap-2">
             {highlightItems.map((item, index) => (
               <li key={`${item}-${index}`} className="flex items-start gap-2 text-sm text-white/80">
@@ -226,9 +226,6 @@ export function AgentProfileCard({
             ))}
           </ul>
 
-          <div className="mt-auto w-full rounded-[18px] border border-white/30 bg-white/10 px-3 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white/90">
-            {hiresSummary}
-          </div>
         </div>
       </aside>
     </article>
