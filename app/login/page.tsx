@@ -7,6 +7,8 @@ import { FormEvent, useMemo, useState } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabaseBrowserClient';
 
 const GRID_IMAGE = '/assets/landing/grid-image.svg';
+const LOGO_IMAGE =
+  'https://www.figma.com/api/mcp/asset/9c0e4fc9-1494-4244-87af-a8e32a8991af';
 
 export default function LoginPage() {
   const supabase = getSupabaseBrowserClient();
@@ -109,15 +111,31 @@ export default function LoginPage() {
       </div>
 
       <div className="relative z-30 mx-auto flex min-h-screen w-full max-w-[1440px] items-center justify-center px-6 py-24 sm:px-10">
-        <div className="w-full max-w-md space-y-6 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <div
+          className="w-full max-w-md space-y-6 rounded-[34px] border border-white/20 bg-white/10 p-8 shadow-[0_20px_80px_rgba(0,0,0,0.2)] backdrop-blur-xl"
+          style={{
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+          }}
+        >
+          <div className="flex items-center justify-start">
+            <Image
+              alt="Merak"
+              src={LOGO_IMAGE}
+              width={120}
+              height={32}
+              className="h-8 w-auto"
+              priority
+            />
+          </div>
           <div className="space-y-2 text-center">
-            <h1 className="text-2xl font-semibold">{heading}</h1>
-            <p className="text-sm text-slate-500">{subheading}</p>
+            <h1 className="text-2xl font-semibold text-white">{heading}</h1>
+            <p className="text-sm text-white/70">{subheading}</p>
           </div>
 
           <form className="space-y-4" onSubmit={handleMagicLink}>
             <div className="space-y-2 text-left">
-              <label className="text-sm font-medium text-slate-700" htmlFor="email">
+              <label className="text-sm font-medium text-white/80" htmlFor="email">
                 Email
               </label>
               <input
@@ -126,7 +144,11 @@ export default function LoginPage() {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 required
-                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                className="w-full rounded-xl border border-white/40 bg-white/10 px-4 py-3 text-sm text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] placeholder:text-white/60 focus:border-white/60 focus:outline-none focus:ring-2 focus:ring-white/40 disabled:opacity-60"
+                style={{
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                }}
                 placeholder="you@example.com"
                 autoComplete="email"
                 disabled={loading}
@@ -135,15 +157,15 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
+              className="flex w-full items-center justify-center rounded-xl border border-white/30 bg-gradient-to-r from-[rgba(182,13,10,0.85)] to-[rgba(1,34,77,0.85)] px-4 py-3 text-sm font-medium text-white shadow-[0_16px_40px_rgba(0,0,0,0.25)] transition hover:from-[rgba(182,13,10,0.95)] hover:to-[rgba(1,34,77,0.95)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:opacity-60"
             >
               {loading ? 'Sending...' : view === 'sign-in' ? 'Send magic link' : 'Send sign-up link'}
             </button>
           </form>
 
           <div className="relative my-4">
-            <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-slate-200" />
-            <span className="relative mx-auto block w-fit bg-white px-3 text-xs uppercase tracking-wide text-slate-400">
+            <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-white/25" />
+            <span className="relative mx-auto block w-fit rounded-full border border-white/10 bg-white/10 px-3 text-xs uppercase tracking-wide text-white/70">
               or
             </span>
           </div>
@@ -152,15 +174,21 @@ export default function LoginPage() {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-sm font-medium text-white transition hover:border-white/50 hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:opacity-60"
+            style={{
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+            }}
           >
             <span>{view === 'sign-in' ? 'Continue with Google' : 'Sign up with Google'}</span>
           </button>
 
           {(message || error) && (
             <div
-              className={`rounded-lg border px-3 py-2 text-sm ${
-                error ? 'border-red-200 bg-red-50 text-red-700' : 'border-emerald-200 bg-emerald-50 text-emerald-700'
+              className={`rounded-xl border px-4 py-3 text-sm ${
+                error
+                  ? 'border-rose-400/70 bg-rose-500/10 text-rose-100'
+                  : 'border-emerald-300/70 bg-emerald-500/10 text-emerald-100'
               }`}
             >
               {error ?? message}
@@ -168,18 +196,18 @@ export default function LoginPage() {
           )}
 
           <div className="space-y-2 text-center">
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-white/60">
               Need help?{' '}
-              <Link href="/contact" className="font-medium text-slate-600 hover:text-slate-900">
+              <Link href="/contact" className="font-medium text-white hover:text-white/80">
                 Contact support
               </Link>
               .
             </p>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-white/75">
               {view === 'sign-in' ? "Don't have an account?" : 'Already have an account?'}{' '}
               <button
                 type="button"
-                className="cursor-pointer rounded-md px-2 py-1 font-medium text-slate-700 underline decoration-slate-300 transition hover:bg-slate-100 hover:text-slate-900 hover:decoration-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400"
+                className="cursor-pointer rounded-md px-2 py-1 font-medium text-white underline decoration-white/50 transition hover:bg-white/10 hover:decoration-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 onClick={() => {
                   setView((current) => (current === 'sign-in' ? 'sign-up' : 'sign-in'));
                   setMessage(null);
