@@ -54,7 +54,7 @@ export function AgentProfileCard({
 
   return (
     <article
-      className={`relative overflow-hidden flex flex-col gap-6 rounded-[25px] border border-[#bfbfbf] bg-white p-6 shadow-sm ${className ?? ''}`}
+      className={`relative overflow-hidden flex flex-col gap-[11px] rounded-[25px] border border-[#bfbfbf] bg-white p-5 shadow-sm ${className ?? ''}`}
       data-testid="agent-profile-card"
     >
       <div
@@ -63,7 +63,7 @@ export function AgentProfileCard({
       />
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-1 flex-col gap-4 md:flex-row md:items-start">
-          <div className="relative h-20 w-20 flex-none overflow-hidden rounded-2xl bg-[#d9d9d9]">
+          <div className="relative h-[78px] w-[78px] flex-none overflow-hidden rounded-[15px] bg-[#d9d9d9]">
             {avatarUrl ? (
               <Image
                 alt={`${name} avatar`}
@@ -75,13 +75,13 @@ export function AgentProfileCard({
             ) : null}
           </div>
 
-          <div className="flex flex-1 flex-col gap-3">
+          <div className="flex flex-1 flex-col gap-1">
             {badgeItems.length ? (
               <div className="flex flex-wrap items-center gap-2">
                 {badgeItems.map((badge) => (
                   <span
                     key={badge.id}
-                    className={`rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${BADGE_STYLES[badge.tone ?? 'slate']}`}
+                    className={`rounded-[6px] px-2 py-1 text-[9px] font-medium normal-case tracking-wide ${BADGE_STYLES[badge.tone ?? 'slate']}`}
                   >
                     {badge.label}
                   </span>
@@ -90,20 +90,20 @@ export function AgentProfileCard({
             ) : null}
 
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div className="flex flex-col gap-1">
-                <h3 className="text-xl font-semibold text-[#1d1d1d]">{`${name} — ${role}`}</h3>
-                <p className="text-sm text-[#5b5b5b]">
+              <div className="flex flex-col gap-1.5">
+                <h3 className="text-lg font-medium text-[#1d1d1d]">{`${name} — ${role}`}</h3>
+                <p className="text-sm text-[#1d1d1d]">
                   {creator}
                   {specialties.length ? (
                     <>
                       {' '}
-                      <span className="text-[#8c8c8c]">{specialties.join(' · ')}</span>
+                      <span>{specialties.join(' · ')}</span>
                     </>
                   ) : null}
                 </p>
               </div>
 
-              <p className="text-lg font-semibold text-[#1d1d1d]">{priceLabel}</p>
+              <p className="text-lg font-medium text-[#1d1d1d]">{priceLabel}</p>
             </div>
           </div>
         </div>
@@ -111,15 +111,14 @@ export function AgentProfileCard({
         <button
           type="button"
           onClick={onMoreOptions}
-          className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#f0f0f0] bg-[#f0f0f0] text-[#1d1d1d] transition hover:border-slate-300 hover:text-slate-900"
+          className="inline-flex h-6 w-6 items-center justify-center rounded-[5px] bg-[#f0f0f0] text-[#1d1d1d] transition"
           aria-label="More actions"
         >
           <span className="sr-only">More actions</span>
           <svg
             aria-hidden="true"
             viewBox="0 0 24 24"
-            fill="none"
-            className="h-4 w-4 stroke-current"
+            className="h-4 w-4 fill-current"
           >
             <circle cx="5" cy="12" r="1.5" />
             <circle cx="12" cy="12" r="1.5" />
@@ -128,17 +127,17 @@ export function AgentProfileCard({
         </button>
       </div>
 
-      <div className="border-t border-dashed border-[#dcdcdc]" />
+      <div className="border-t border-[#f0f0f0]" />
 
-      <p className="text-sm leading-relaxed text-[#262626]">
+      <p className="text-[13px] leading-4 text-[#262626]">
         {description ?? 'No description available at the moment.'}
       </p>
 
-      <div className="border-t border-dashed border-[#dcdcdc]" />
+      <div className="border-t border-[#f0f0f0]" />
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         {hiresLabel ? (
-          <p className="text-xs font-medium uppercase tracking-wide text-[#8c8c8c]">
+          <p className="text-[11px] font-normal normal-case tracking-wide text-[#8c8c8c]">
             {hiresLabel}
           </p>
         ) : (
@@ -151,14 +150,14 @@ export function AgentProfileCard({
             onClick={onBookmarkToggle}
             aria-pressed={isBookmarked}
             aria-label={isBookmarked ? 'Remove from favorites' : 'Save to favorites'}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-[#1d1d1d] transition hover:border-slate-300 hover:text-[#01224d]"
+            className="flex h-[33px] w-[33px] items-center justify-center rounded-full bg-[#f0f0f0] text-[#1d1d1d] transition"
           >
             <svg
               aria-hidden="true"
               viewBox="0 0 24 24"
-              fill={isBookmarked ? '#01224d' : 'none'}
-              stroke="currentColor"
-              strokeWidth={1.5}
+              fill="none"
+              stroke="#1D1D1D"
+              strokeWidth={2}
               className="h-5 w-5"
             >
               <path
@@ -170,7 +169,7 @@ export function AgentProfileCard({
           <button
             type="button"
             onClick={onViewDetails}
-            className="inline-flex items-center justify-center rounded-full bg-[#01224d] px-6 py-2 text-sm font-medium text-white transition hover:bg-[#143669]"
+            className="inline-flex h-[33px] items-center justify-center rounded-[22px] bg-[#01224d] px-3 py-1 text-sm font-medium text-white transition hover:bg-[#143669]"
           >
             View Details
           </button>
