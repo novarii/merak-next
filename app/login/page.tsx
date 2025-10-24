@@ -1,9 +1,12 @@
-"use client";
+'use client';
 
-import { FormEvent, useMemo, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
+import { FormEvent, useMemo, useState } from 'react';
 
 import { getSupabaseBrowserClient } from '@/lib/supabaseBrowserClient';
+
+const GRID_IMAGE = '/assets/landing/grid-image.svg';
 
 export default function LoginPage() {
   const supabase = getSupabaseBrowserClient();
@@ -77,88 +80,118 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-6 py-24 text-slate-900">
-      <div className="w-full max-w-md space-y-6 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold">{heading}</h1>
-          <p className="text-sm text-slate-500">{subheading}</p>
-        </div>
+    <main className="relative min-h-screen overflow-hidden text-slate-900">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          background:
+            'linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(55,15,19,0.84) 100%)',
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 h-[160vh] -translate-y-1/2 opacity-45 blur-[240px]"
+        style={{
+          background:
+            'radial-gradient(55% 55% at 50% 50%, rgba(142,84,64,0.75) 0%, rgba(142,84,64,0) 75%)',
+        }}
+      />
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-20">
+        <Image
+          alt=""
+          src={GRID_IMAGE}
+          fill
+          className="object-cover opacity-80 mix-blend-multiply"
+          priority
+          sizes="100vw"
+        />
+      </div>
 
-        <form className="space-y-4" onSubmit={handleMagicLink}>
-          <div className="space-y-2 text-left">
-            <label className="text-sm font-medium text-slate-700" htmlFor="email">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              required
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200"
-              placeholder="you@example.com"
-              autoComplete="email"
-              disabled={loading}
-            />
+      <div className="relative z-30 mx-auto flex min-h-screen w-full max-w-[1440px] items-center justify-center px-6 py-24 sm:px-10">
+        <div className="w-full max-w-md space-y-6 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+          <div className="space-y-2 text-center">
+            <h1 className="text-2xl font-semibold">{heading}</h1>
+            <p className="text-sm text-slate-500">{subheading}</p>
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex w-full items-center justify-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
-          >
-            {loading ? 'Sending...' : view === 'sign-in' ? 'Send magic link' : 'Send sign-up link'}
-          </button>
-        </form>
 
-        <div className="relative my-4">
-          <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-slate-200" />
-          <span className="relative mx-auto block w-fit bg-white px-3 text-xs uppercase tracking-wide text-slate-400">
-            or
-          </span>
-        </div>
-
-        <button
-          type="button"
-          onClick={handleGoogleSignIn}
-          disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
-        >
-          <span>{view === 'sign-in' ? 'Continue with Google' : 'Sign up with Google'}</span>
-        </button>
-
-        {(message || error) && (
-          <div
-            className={`rounded-lg border px-3 py-2 text-sm ${
-              error ? 'border-red-200 bg-red-50 text-red-700' : 'border-emerald-200 bg-emerald-50 text-emerald-700'
-            }`}
-          >
-            {error ?? message}
-          </div>
-        )}
-
-        <div className="space-y-2 text-center">
-          <p className="text-xs text-slate-400">
-            Need help?{' '}
-            <Link href="/contact" className="font-medium text-slate-600 hover:text-slate-900">
-              Contact support
-            </Link>
-            .
-          </p>
-          <p className="text-sm text-slate-500">
-            {view === 'sign-in' ? "Don't have an account?" : 'Already have an account?'}{' '}
+          <form className="space-y-4" onSubmit={handleMagicLink}>
+            <div className="space-y-2 text-left">
+              <label className="text-sm font-medium text-slate-700" htmlFor="email">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                placeholder="you@example.com"
+                autoComplete="email"
+                disabled={loading}
+              />
+            </div>
             <button
-              type="button"
-              className="cursor-pointer rounded-md px-2 py-1 font-medium text-slate-700 underline decoration-slate-300 transition hover:bg-slate-100 hover:text-slate-900 hover:decoration-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400"
-              onClick={() => {
-                setView((current) => (current === 'sign-in' ? 'sign-up' : 'sign-in'));
-                setMessage(null);
-                setError(null);
-              }}
+              type="submit"
               disabled={loading}
+              className="flex w-full items-center justify-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
             >
-              {view === 'sign-in' ? 'Create one' : 'Sign in'}
+              {loading ? 'Sending...' : view === 'sign-in' ? 'Send magic link' : 'Send sign-up link'}
             </button>
-          </p>
+          </form>
+
+          <div className="relative my-4">
+            <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-slate-200" />
+            <span className="relative mx-auto block w-fit bg-white px-3 text-xs uppercase tracking-wide text-slate-400">
+              or
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+          >
+            <span>{view === 'sign-in' ? 'Continue with Google' : 'Sign up with Google'}</span>
+          </button>
+
+          {(message || error) && (
+            <div
+              className={`rounded-lg border px-3 py-2 text-sm ${
+                error ? 'border-red-200 bg-red-50 text-red-700' : 'border-emerald-200 bg-emerald-50 text-emerald-700'
+              }`}
+            >
+              {error ?? message}
+            </div>
+          )}
+
+          <div className="space-y-2 text-center">
+            <p className="text-xs text-slate-400">
+              Need help?{' '}
+              <Link href="/contact" className="font-medium text-slate-600 hover:text-slate-900">
+                Contact support
+              </Link>
+              .
+            </p>
+            <p className="text-sm text-slate-500">
+              {view === 'sign-in' ? "Don't have an account?" : 'Already have an account?'}{' '}
+              <button
+                type="button"
+                className="cursor-pointer rounded-md px-2 py-1 font-medium text-slate-700 underline decoration-slate-300 transition hover:bg-slate-100 hover:text-slate-900 hover:decoration-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400"
+                onClick={() => {
+                  setView((current) => (current === 'sign-in' ? 'sign-up' : 'sign-in'));
+                  setMessage(null);
+                  setError(null);
+                }}
+                disabled={loading}
+              >
+                {view === 'sign-in' ? 'Create one' : 'Sign in'}
+              </button>
+              .
+            </p>
+          </div>
         </div>
       </div>
     </main>
