@@ -128,7 +128,7 @@ export default function LoginPage() {
               priority
             />
           </div>
-          <div className="space-y-2 text-center">
+          <div className="space-y-2 text-left">
             <h1 className="text-2xl font-semibold text-white">{heading}</h1>
             <p className="text-sm text-white/70">{subheading}</p>
           </div>
