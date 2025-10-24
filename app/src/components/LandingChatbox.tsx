@@ -121,48 +121,63 @@ export const LandingChatbox = () => {
 
   return (
     <div className="relative mx-auto w-full max-w-[720px]">
-      <div
-        className="relative h-[192px] rounded-[34px] border border-white/20 bg-white/10 shadow-[0_20px_80px_rgba(0,0,0,0.12)]"
-        style={{
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-        }}
-      >
-        <div className="pointer-events-none absolute inset-0 rounded-[34px] border border-white/10" />
+      <div className="space-y-10">
+        <div
+          className="relative h-[192px] rounded-[34px] border border-white/20 bg-white/10 shadow-[0_20px_80px_rgba(0,0,0,0.12)]"
+          style={{
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+          }}
+        >
+          <div className="pointer-events-none absolute inset-0 rounded-[34px] border border-white/10" />
 
-        <label className="sr-only" htmlFor="landing-chatbox-input">
-          Ask Merak anything
-        </label>
-        <textarea
-          id="landing-chatbox-input"
-          className="absolute left-8 right-8 top-6 bottom-20 resize-none border-none bg-transparent text-lg text-[#454545] outline-none placeholder:text-[#5b5b5b] focus:outline-none"
-          style={{ fontFamily: 'var(--font-family-primary)' }}
-          placeholder={message ? undefined : placeholder}
-          value={message}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          autoComplete="off"
-          spellCheck={false}
-          aria-label="Chat prompt"
-        />
+          <label className="sr-only" htmlFor="landing-chatbox-input">
+            Ask Merak anything
+          </label>
+          <textarea
+            id="landing-chatbox-input"
+            className="absolute left-8 right-8 top-6 bottom-20 resize-none border-none bg-transparent text-lg text-[#454545] outline-none placeholder:text-[#5b5b5b] focus:outline-none"
+            style={{ fontFamily: 'var(--font-family-primary)' }}
+            placeholder={message ? undefined : placeholder}
+            value={message}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            autoComplete="off"
+            spellCheck={false}
+            aria-label="Chat prompt"
+          />
 
-        <div className="absolute bottom-6 left-6 flex gap-3">
-          <IconButton icon="attach" />
+          <div className="absolute bottom-6 left-6 flex gap-3">
+            <IconButton icon="attach" />
+          </div>
+
+          <div className="absolute bottom-6 right-6 flex gap-3">
+            <IconButton icon="headphones" />
+            <Link
+              href="/login"
+              className="relative flex size-[34px] items-center justify-center rounded-[20px] border border-white/20 shadow-[inset_0_0_2px_rgba(240,240,240,0.8)] backdrop-blur-md transition hover:border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white bg-gradient-to-r from-[rgba(182,13,10,0.8)] to-[rgba(1,34,77,0.8)] text-white"
+              style={{ WebkitBackdropFilter: 'blur(10px)' }}
+              aria-label="Send message"
+              onClick={handleSubmit}
+            >
+              <span className="flex h-6 w-6 items-center justify-center">
+                <Image alt="" src={ICONS.send.src} width={16} height={16} className="h-4 w-4 object-contain" />
+              </span>
+            </Link>
+          </div>
         </div>
 
-        <div className="absolute bottom-6 right-6 flex gap-3">
-          <IconButton icon="headphones" />
-          <Link
-            href="/login"
-            className="relative flex size-[34px] items-center justify-center rounded-[20px] border border-white/20 shadow-[inset_0_0_2px_rgba(240,240,240,0.8)] backdrop-blur-md transition hover:border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white bg-gradient-to-r from-[rgba(182,13,10,0.8)] to-[rgba(1,34,77,0.8)] text-white"
-            style={{ WebkitBackdropFilter: 'blur(10px)' }}
-            aria-label="Send message"
-            onClick={handleSubmit}
-          >
-            <span className="flex h-6 w-6 items-center justify-center">
-              <Image alt="" src={ICONS.send.src} width={16} height={16} className="h-4 w-4 object-contain" />
-            </span>
-          </Link>
+        <div className="flex flex-wrap items-center justify-center gap-3 md:flex-nowrap">
+          {['Researcher', 'Writing Assistant', 'Customer Support', 'Accountant'].map((label) => (
+            <button
+              key={label}
+              type="button"
+              className="rounded-[20px] border border-white/20 bg-white/10 px-4 py-2 text-[16px] font-medium text-[#f0f0f0] shadow-[inset_0_0_2px_rgba(240,240,240,0.8)] backdrop-blur-md transition hover:border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              style={{ WebkitBackdropFilter: 'blur(10px)', fontFamily: 'var(--font-family-primary)' }}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </div>
     </div>
