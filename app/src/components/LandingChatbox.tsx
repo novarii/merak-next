@@ -73,7 +73,11 @@ const IconButton = ({ icon, accent = false }: IconButtonProps) => {
   );
 };
 
-export const LandingChatbox = () => {
+interface LandingChatboxProps {
+  isAuthenticated?: boolean;
+}
+
+export const LandingChatbox = ({ isAuthenticated = false }: LandingChatboxProps) => {
   const router = useRouter();
   const [message, setMessage] = useState('');
   const [phraseIndex, setPhraseIndex] = useState(0);
@@ -125,7 +129,8 @@ export const LandingChatbox = () => {
   };
 
   const handleSubmit = () => {
-    router.push('/login');
+    const destination = isAuthenticated ? '/chat' : '/login';
+    router.push(destination);
   };
 
   const handleQuickPrompt = (prompt: string) => {
@@ -177,7 +182,7 @@ export const LandingChatbox = () => {
           <div className="absolute bottom-6 right-6 flex gap-3">
             <IconButton icon="headphones" />
             <Link
-              href="/login"
+              href={isAuthenticated ? '/chat' : '/login'}
               className="relative flex size-[34px] items-center justify-center rounded-[20px] border border-white/20 shadow-[inset_0_0_2px_rgba(240,240,240,0.8)] backdrop-blur-md transition hover:border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white bg-gradient-to-r from-[rgba(182,13,10,0.8)] to-[rgba(1,34,77,0.8)] text-white"
               style={{ WebkitBackdropFilter: 'blur(10px)' }}
               aria-label="Send message"

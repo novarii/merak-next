@@ -2,12 +2,22 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { LandingChatbox } from '@/components/LandingChatbox';
+import { createSupabaseServerClient } from '@/lib/supabaseServerAuthClient';
 
 const GRID_IMAGE = '/assets/landing/grid-image.svg';
 const LOGO_IMAGE =
   'https://www.figma.com/api/mcp/asset/9c0e4fc9-1494-4244-87af-a8e32a8991af';
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const isAuthenticated = Boolean(session);
+  const accountLink = isAuthenticated ? '/profile' : '/login';
+  const accountLabel = isAuthenticated ? 'Profile' : 'Log In';
+
   return (
     <main className="relative min-h-screen overflow-hidden text-slate-900">
       <div
@@ -65,8 +75,8 @@ export default function LandingPage() {
             <Link className="transition hover:text-slate-950" href="/about">
               About Us
             </Link>
-            <Link className="transition hover:text-slate-950" href="/login">
-              Log In
+            <Link className="transition hover:text-slate-950" href={accountLink}>
+              {accountLabel}
             </Link>
           </nav>
         </header>
@@ -105,7 +115,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <LandingChatbox />
+            <LandingChatbox isAuthenticated={isAuthenticated} />
           </div>
         </section>
       </div>
