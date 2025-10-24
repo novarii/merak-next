@@ -1,22 +1,18 @@
 import Image from 'next/image';
-import Link from 'next/link';
 
 import { LandingChatbox } from '@/components/LandingChatbox';
+import { SiteHeader } from '@/components/SiteHeader';
+import { deriveAccountNavigation } from '@/lib/accountNavigation';
 import { createSupabaseServerClient } from '@/lib/supabaseServerAuthClient';
 
 const GRID_IMAGE = '/assets/landing/grid-image.svg';
-const LOGO_IMAGE =
-  'https://www.figma.com/api/mcp/asset/9c0e4fc9-1494-4244-87af-a8e32a8991af';
 
 export default async function LandingPage() {
   const supabase = await createSupabaseServerClient();
   const {
     data: { session },
   } = await supabase.auth.getSession();
-
-  const isAuthenticated = Boolean(session);
-  const accountLink = isAuthenticated ? '/profile' : '/login';
-  const accountLabel = isAuthenticated ? 'Profile' : 'Log In';
+  const { isAuthenticated, accountLink, accountLabel } = deriveAccountNavigation(session);
 
   return (
     <main className="relative min-h-screen overflow-hidden text-slate-900">
@@ -57,29 +53,7 @@ export default async function LandingPage() {
           />
         </div>
 
-        <header className="flex items-center justify-between py-4 md:py-6">
-          <Link href="/" className="flex items-center" aria-label="Merak home">
-            <Image
-              alt="Merak"
-              src={LOGO_IMAGE}
-              width={132}
-              height={54}
-              className="h-[54px] w-[132px] object-contain"
-              priority
-            />
-          </Link>
-          <nav className="flex items-center gap-6 text-base font-semibold text-[#1d1d1d] sm:gap-10 sm:text-xl">
-            <Link className="transition hover:text-slate-950" href="/marketplace">
-              Marketplace
-            </Link>
-            <Link className="transition hover:text-slate-950" href="/about">
-              About Us
-            </Link>
-            <Link className="transition hover:text-slate-950" href={accountLink}>
-              {accountLabel}
-            </Link>
-          </nav>
-        </header>
+        <SiteHeader accountLink={accountLink} accountLabel={accountLabel} />
 
         <section className="flex flex-1 items-center justify-center py-12">
           <div

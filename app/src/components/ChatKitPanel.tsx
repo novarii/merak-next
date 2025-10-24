@@ -45,7 +45,7 @@ export function ChatKitPanel({
         },
       },
       typography: {
-        baseSize: 14,
+        baseSize: 16,
         fontFamily:
           '"OpenAI Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif',
         fontFamilyMono:
