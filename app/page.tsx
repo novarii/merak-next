@@ -21,7 +21,7 @@ export default function LandingPage() {
       <div className="relative z-30 mx-auto flex min-h-screen w-full max-w-[1440px] flex-col px-6 pb-16 pt-10 sm:px-10">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-1/3 -z-20 h-[65vh] -translate-y-1/2 opacity-60 blur-[160px]"
+          className="pointer-events-none absolute inset-x-0 top-1/3 -z-20 h-[65vh] -translate-y-1/2 opacity-40 blur-[160px]"
           style={{
             background:
               'radial-gradient(50% 50% at 50% 50%, rgba(142,84,64,0.65) 0%, rgba(142,84,64,0) 70%)',
@@ -32,9 +32,9 @@ export default function LandingPage() {
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
             maskImage:
-              'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 180%)',
+              'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 250%)',
             WebkitMaskImage:
-              'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 180%)',
+              'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 250%)',
           }}
         >
           <Image
@@ -71,33 +71,41 @@ export default function LandingPage() {
           </nav>
         </header>
 
-        <section className="flex flex-1 items-center py-12">
-          <div className="grid w-full gap-12 lg:grid-cols-[minmax(0,1fr)_520px] lg:items-center">
+        <section className="flex flex-1 items-center justify-center py-12">
+          <div
+            className="flex w-full max-w-4xl flex-col items-center gap-10 text-center"
+            style={{ marginBottom: 126 }}
+          >
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-3 rounded-full border border-white/40 bg-white/20 px-6 py-2 text-sm uppercase tracking-[0.3em] text-[#1d1d1d] shadow-sm backdrop-blur">
-                <span>Marketing Copilot</span>
+              <div className="relative flex flex-col items-center">
+                <h1
+                  className="mx-auto max-w-3xl text-[48px] font-semibold leading-[1.2] text-[#1d1d1d] sm:text-[56px] md:text-[60px] lg:text-[65px]"
+                  style={{ fontFamily: 'var(--font-family-primary)' }}
+                >
+                  <span>The </span>
+                  <span
+                    style={{
+                      backgroundImage: 'linear-gradient(0deg, #b60d0a 15%, #01224d 72%)',
+                      color: 'transparent',
+                      backgroundClip: 'text',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  >
+                    Intelligent
+                  </span>
+                  <span> Layer</span>
+                </h1>
               </div>
-              <h1
-                className="max-w-2xl text-[#1d1d1d]"
-                style={{
-                  fontSize: 'var(--font-size-h1)',
-                  lineHeight: 1.05,
-                }}
-              >
-                Find the marketing experts you need, in seconds.
-              </h1>
               <p
-                className="max-w-xl text-[#454545]"
-                style={{ fontSize: 'var(--font-size-body)', lineHeight: 1.5 }}
+                className="mx-auto max-w-[700px] text-[20px] leading-[1.35] text-[#5b5b5b] sm:text-[21px] md:text-[22px]"
+                style={{ fontFamily: 'var(--font-family-primary)' }}
               >
-                Chat with Merak to spin up entire campaigns, source vetted specialists, and manage
-                every deliverable without leaving the conversation.
+                Find, compare, and connect with the tools that fit you.
               </p>
             </div>
 
-            <div className="flex justify-center lg:justify-end">
-              <LandingChatbox />
-            </div>
+            <LandingChatbox />
           </div>
         </section>
       </div>
