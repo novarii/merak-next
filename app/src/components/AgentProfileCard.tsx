@@ -90,7 +90,15 @@ export function AgentProfileCard({
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-6">
                 <div className="flex flex-col gap-1">
                   <h3 className="text-lg font-medium text-[#1d1d1d]">{name}</h3>
-                  <p className="text-sm text-[#1d1d1d]">{creator}</p>
+                  <p className="text-sm text-[#1d1d1d]">
+                    <span>{creator}</span>
+                    {role ? (
+                      <>
+                        {' / '}
+                        <span className="text-[#8c8c8c]">{`${role} Agent`}</span>
+                      </>
+                    ) : null}
+                  </p>
                 </div>
 
                 <div className="flex items-start md:items-center md:justify-end">
