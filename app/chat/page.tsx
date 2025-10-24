@@ -1,25 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ChatKitPanel } from '@/components/ChatKitPanel';
-import { AgentProfileCard } from '@/components/AgentProfileCard';
-import type { AgentProfileBadge } from '@/components/AgentProfileCard';
+import { AgentListView } from '@/components/AgentListView';
+import { AgentProfileView } from '@/components/AgentProfileView';
 import { SiteHeader } from '@/components/SiteHeader';
 import { useAgentProfiles } from '@/hooks/useAgentProfiles';
 import { deriveAccountNavigation } from '@/lib/accountNavigation';
 import { getSupabaseBrowserClient } from '@/lib/supabaseBrowserClient';
 
 export default function ChatPage() {
-  const {
-    profiles,
-    loading,
-    error,
-    loadProfiles,
-    clearProfiles,
-  } = useAgentProfiles();
+  const { profiles, loading, error, loadProfiles, clearProfiles } = useAgentProfiles();
 
   const [accountNav, setAccountNav] = useState(() => deriveAccountNavigation(null));
+  const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -51,10 +46,45 @@ export default function ChatPage() {
     };
   }, []);
 
-  const formatLabel = (value: string) =>
-    value
-      .replace(/[-_]/g, ' ')
-      .replace(/\b\w/g, (char) => char.toUpperCase());
+  const selectedAgent = useMemo(() => {
+    if (!selectedAgentId) {
+      return null;
+    }
+
+    return profiles.find((profile) => profile.id === selectedAgentId) ?? null;
+  }, [profiles, selectedAgentId]);
+
+  useEffect(() => {
+    if (selectedAgentId && !profiles.some((profile) => profile.id === selectedAgentId)) {
+      setSelectedAgentId(null);
+    }
+  }, [profiles, selectedAgentId]);
+
+  const handleViewDetails = useCallback((agentId: string) => {
+    setSelectedAgentId(agentId);
+  }, []);
+
+  const handleBackToMarketplace = useCallback(() => {
+    setSelectedAgentId(null);
+  }, []);
+
+  const handleThreadChange = useCallback(() => {
+    setSelectedAgentId(null);
+    clearProfiles();
+  }, [clearProfiles]);
+
+  const handleProfilesLoad = useCallback(
+    async (agentIds: string[]) => {
+      const result = await loadProfiles(agentIds);
+
+      if (selectedAgentId && !agentIds.includes(selectedAgentId)) {
+        setSelectedAgentId(null);
+      }
+
+      return result;
+    },
+    [loadProfiles, selectedAgentId],
+  );
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f5f5f5]">
@@ -69,110 +99,24 @@ export default function ChatPage() {
           <aside className="w-full max-w-md flex-none">
             <div className="sticky top-10 h-[88vh] overflow-hidden rounded-3xl border border-slate-200/60 bg-white shadow-xl ring-1 ring-slate-200/60">
               <ChatKitPanel
-                onProfilesLoad={loadProfiles}
-                onThreadChange={clearProfiles}
+                onProfilesLoad={handleProfilesLoad}
+                onThreadChange={handleThreadChange}
               />
             </div>
           </aside>
 
-          {/* Right Column: Recommended Agents */}
+          {/* Right Column: Main Content (list/profile toggle) */}
           <main className="flex-1">
-            <header className="mb-8">
-              <h1 className="text-3xl font-semibold text-slate-900">Recommended Agents</h1>
-              <p className="mt-2 text-sm text-slate-600">
-                Review agent profiles surfaced during your conversations.
-              </p>
-            </header>
-
-            <div className="space-y-4 rounded-3xl border border-slate-200/60 bg-white/75 p-8 shadow-lg">
-              {loading ? (
-                <p className="text-sm text-slate-500">Loading profiles…</p>
-              ) : null}
-
-              {error ? (
-                <p className="text-sm text-rose-500">
-                  Unable to load agent profiles: {error}
-                </p>
-              ) : null}
-
-              {!loading && !error && profiles.length === 0 ? (
-                <p className="text-sm text-slate-500">
-                  Start a conversation to see matching agent profiles.
-                </p>
-              ) : null}
-
-              {profiles.map((profile, index) => {
-                const formattedRate =
-                  profile.base_rate !== null
-                    ? `$${profile.base_rate.toLocaleString(undefined, {
-                        maximumFractionDigits: 0,
-                      })}/hr`
-                    : 'Pricing on request';
-
-                const specialties = [
-                  formatLabel(profile.agent_type),
-                  profile.industry ?? null,
-                  profile.languages[0] ?? null,
-                ].filter((value): value is string => Boolean(value));
-
-                const spotlightBadges: Array<{ label: string; tone: AgentProfileBadge['tone'] }> = [
-                  { label: 'Top Choice', tone: 'blue' },
-                  { label: 'Great Fit', tone: 'rose' },
-                  { label: 'Strong Match', tone: 'slate' },
-                ];
-
-                const rotationBadge = spotlightBadges[index % spotlightBadges.length];
-                const badges: AgentProfileBadge[] = [];
-
-                if (index === 0) {
-                  badges.push({
-                    id: `${profile.id}-spotlight-top-choice`,
-                    label: 'Top Choice',
-                    tone: 'blue',
-                  });
-                  const secondaryBadge = spotlightBadges[(index + 1) % spotlightBadges.length];
-                  badges.push({
-                    id: `${profile.id}-spotlight-secondary`,
-                    label: secondaryBadge.label,
-                    tone: secondaryBadge.tone,
-                  });
-                } else {
-                  badges.push({
-                    id: `${profile.id}-spotlight-rotation`,
-                    label: rotationBadge.label,
-                    tone: rotationBadge.tone,
-                  });
-                }
-
-                const hiresLabel =
-                  profile.success_rate !== null
-                    ? `${profile.success_rate.toFixed(0)}% success rate`
-                    : profile.experience_years !== null
-                    ? `${profile.experience_years} years experience`
-                    : undefined;
-
-                return (
-                  <AgentProfileCard
-                    key={profile.id}
-                    name={profile.name}
-                    role={formatLabel(profile.agent_type)}
-                    creator={profile.tagline ?? 'Independent Agent'}
-                    specialties={specialties}
-                    priceLabel={formattedRate}
-                    description={profile.description ?? undefined}
-                    hiresLabel={hiresLabel}
-                    badges={badges}
-                    isBookmarked={index === 0}
-                    matchScore={
-                      profile.success_rate !== null
-                        ? Math.round(profile.success_rate)
-                        : undefined
-                    }
-                    matchHighlights={specialties.slice(0, 3)}
-                  />
-                );
-              })}
-            </div>
+            {selectedAgent ? (
+              <AgentProfileView profile={selectedAgent} onBack={handleBackToMarketplace} />
+            ) : (
+              <AgentListView
+                profiles={profiles}
+                loading={loading}
+                error={error}
+                onViewDetailsClick={handleViewDetails}
+              />
+            )}
           </main>
         </div>
       </div>

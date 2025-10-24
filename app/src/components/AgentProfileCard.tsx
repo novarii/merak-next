@@ -159,9 +159,7 @@ export function AgentProfileCard({
         <div className="border-t border-[#f0f0f0]" />
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs font-semibold tracking-wide text-[#262626]">
-            50+ Hires
-          </p>
+          <p className="text-xs font-semibold tracking-wide text-[#262626]">{hiresSummary}</p>
 
           <div className="flex items-center gap-3">
             <button
@@ -205,7 +203,7 @@ export function AgentProfileCard({
             strokeWidth={6}
           />
           <div className="text-center">
-            <h3 className="text-lg font-semibold text-white/90">Merak's Score</h3>
+            <h3 className="text-lg font-semibold text-white/90">Merak&apos;s Score</h3>
           </div>
           <div className="flex w-full items-center">
             <div className="h-px flex-1 border-t border-white/30" />
