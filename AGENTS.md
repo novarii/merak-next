@@ -10,7 +10,7 @@
 - README.md: an index of all the documentations we have so people know what & where to look for things
 
 ## Project Structure & Module Organization
-This Next.js 15 app uses the App Router. Routes live in `app/` with the shell in `app/layout.tsx` and the landing page in `app/page.tsx` (a blank canvas ready for customization). The chat experience is served from `app/chat/page.tsx`. Shared UI sits in `app/src/components/`, helpers in `app/src/lib/`, and API proxies (notably `app/api/chat/route.ts`) forward traffic to the chat backend. Global styles reside in `app/globals.css`, Tailwind setup in `tailwind.config.ts`, and the `@/*` alias is defined in `tsconfig.json` for intra-project imports.
+This Next.js 15 app uses the App Router. Routes live in `app/` with the shell in `app/layout.tsx` and the landing page in `app/page.tsx` (a blank canvas ready for customization). The chat experience is served from `app/chat/page.tsx`. Shared UI sits in `app/src/components/`, helpers in `app/src/lib/`, and API proxies (notably `app/api/chatkit/route.ts`) forward traffic to the chat backend. Global styles reside in `app/globals.css`, Tailwind setup in `tailwind.config.ts`, and the `@/*` alias is defined in `tsconfig.json` for intra-project imports.
 
 ## Build, Test, and Development Commands
 - `npm install` — install node modules (run after cloning or when dependencies change).
@@ -26,4 +26,4 @@ Write TypeScript first and default to functional React components. Use two-space
 Follow the existing history: short, imperative commit subjects (e.g., `Add chat proxy route`) with optional body lines. PRs should clarify intent, list key changes, attach UI screenshots when front-end behavior shifts, and reference related issues. Ensure `npm run lint` and `npm run build` succeed before review, and call out new env vars or migrations.
 
 ## Security & Configuration Tips
-Provide the ChatKit bridge URL via `BACKEND_URL` on the server, and expose client-safe overrides with `NEXT_PUBLIC_CHATKIT_API_URL` and `NEXT_PUBLIC_CHATKIT_API_DOMAIN_KEY`. Never commit real secrets; document expected values in `.env.local.sample`. When proxying in `app/api/chat/route.ts`, forward only the minimum headers needed for upstream authentication.
+Provide the ChatKit bridge URL via `BACKEND_URL` on the server, and expose client-safe overrides with `NEXT_PUBLIC_CHATKIT_API_URL` and `NEXT_PUBLIC_CHATKIT_API_DOMAIN_KEY`. Never commit real secrets; document expected values in `.env.local.sample`. When proxying in `app/api/chatkit/route.ts`, forward only the minimum headers needed for upstream authentication.

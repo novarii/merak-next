@@ -16,11 +16,11 @@ export const createSupabaseServerClient = async () => {
       get(name: string) {
         return cookieStore.get(name)?.value;
       },
-      set(name: string, value: string, options?: Record<string, unknown>) {
-        cookieStore.set({ name, value, ...(options ?? {}) });
+      set() {
+        // No-op: Server Components cannot modify cookies directly
       },
-      remove(name: string, options?: Record<string, unknown>) {
-        cookieStore.delete({ name, ...(options ?? {}) });
+      remove() {
+        // No-op: Server Components cannot modify cookies directly
       },
     },
   });

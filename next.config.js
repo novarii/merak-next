@@ -14,8 +14,8 @@ const nextConfig = {
     const backendTarget = process.env.BACKEND_URL || 'http://127.0.0.1:8000';
     return [
       {
-        source: '/chat/:path*',
-        destination: `${backendTarget}/chat/:path*`,
+        source: '/chatkit/:path*',
+        destination: `${backendTarget}/chatkit/:path*`,
       },
     ];
   },

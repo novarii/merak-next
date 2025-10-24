@@ -1,7 +1,7 @@
 import { StartScreenPrompt } from '@openai/chatkit';
 
 export const CHATKIT_API_URL =
-  process.env.NEXT_PUBLIC_CHATKIT_API_URL ?? '/chat';
+  process.env.NEXT_PUBLIC_CHATKIT_API_URL ?? '/chatkit';
 
 export const CHATKIT_API_DOMAIN_KEY =
   process.env.NEXT_PUBLIC_CHATKIT_API_DOMAIN_KEY ?? 'domain_pk_localhost_dev';
