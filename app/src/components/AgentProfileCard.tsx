@@ -54,9 +54,13 @@ export function AgentProfileCard({
 
   return (
     <article
-      className={`flex flex-col gap-6 rounded-[25px] border border-[#bfbfbf] bg-white p-6 shadow-sm ${className ?? ''}`}
+      className={`relative overflow-hidden flex flex-col gap-6 rounded-[25px] border border-[#bfbfbf] bg-white p-6 shadow-sm ${className ?? ''}`}
       data-testid="agent-profile-card"
     >
+      <div
+        className="absolute top-0 right-0 h-[253.01px] w-[156.93px] rounded-[25px] border border-[#BFBFBF]"
+        style={{ background: 'linear-gradient(219.54deg, #00224D 17.46%, #B60D0A 95.46%)' }}
+      />
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-1 flex-col gap-4 md:flex-row md:items-start">
           <div className="relative h-20 w-20 flex-none overflow-hidden rounded-2xl bg-[#d9d9d9]">
