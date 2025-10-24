@@ -60,9 +60,9 @@ export function AgentProfileCard({
       data-testid="agent-profile-card"
     >
       <div className="flex flex-1 flex-col gap-6 p-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div className="flex flex-1 flex-col gap-4 md:flex-row md:items-start">
-            <div className="relative h-[78px] w-[78px] flex-none overflow-hidden rounded-[15px] bg-[#d9d9d9]">
+        <div className="flex flex-col items-stretch gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
+          <div className="flex flex-1 flex-col items-stretch gap-4 md:flex-row md:items-stretch">
+            <div className="relative h-[78px] w-[78px] flex-shrink-0 overflow-hidden rounded-[15px] bg-[#d9d9d9]">
               {avatarUrl ? (
                 <Image
                   alt={`${name} avatar`}
@@ -74,7 +74,7 @@ export function AgentProfileCard({
               ) : null}
             </div>
 
-            <div className="flex flex-1 flex-col gap-1">
+            <div className="flex h-full flex-1 flex-col justify-between gap-1">
               {badgeItems.length ? (
                 <div className="flex flex-wrap items-center gap-2">
                   {badgeItems.map((badge) => (
@@ -88,21 +88,15 @@ export function AgentProfileCard({
                 </div>
               ) : null}
 
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-6">
                 <div className="flex flex-col gap-1.5">
-                  <h3 className="text-lg font-medium text-[#1d1d1d]">{`${name} — ${role}`}</h3>
-                  <p className="text-sm text-[#1d1d1d]">
-                    {creator}
-                    {specialties.length ? (
-                      <>
-                        {' '}
-                        <span>{specialties.join(' · ')}</span>
-                      </>
-                    ) : null}
-                  </p>
+                  <h3 className="text-lg font-medium text-[#1d1d1d]">{name}</h3>
+                  <p className="text-sm text-[#1d1d1d]">{creator}</p>
                 </div>
 
-                <p className="text-lg font-medium text-[#1d1d1d]">{priceLabel}</p>
+                <div className="flex items-start md:items-center md:justify-end">
+                  <p className="text-lg font-medium text-[#1d1d1d]">{priceLabel}</p>
+                </div>
               </div>
             </div>
           </div>
