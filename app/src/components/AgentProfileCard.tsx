@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import { useMemo } from 'react';
 
+import { CircularProgress } from './CircularProgress';
+
 type BadgeTone = 'rose' | 'blue' | 'slate';
 
 export interface AgentProfileBadge {
@@ -25,6 +27,8 @@ export interface AgentProfileCardProps {
   onBookmarkToggle?: () => void;
   onViewDetails?: () => void;
   onMoreOptions?: () => void;
+  matchScore?: number;
+  matchHighlights?: string[];
   className?: string;
 }
 
@@ -41,19 +45,38 @@ export function AgentProfileCard({
   specialties,
   priceLabel,
   description,
+  hiresLabel,
   avatarUrl,
   badges = [],
   isBookmarked = false,
   onBookmarkToggle,
   onViewDetails,
   onMoreOptions,
+  matchScore,
+  matchHighlights,
   className,
 }: AgentProfileCardProps) {
   const badgeItems = useMemo(() => badges.filter((badge) => Boolean(badge.label)), [badges]);
+  const resolvedScore = useMemo(
+    () => Math.round(Math.max(0, Math.min(100, matchScore ?? 85))),
+    [matchScore],
+  );
+  const highlightItems = useMemo(() => {
+    if (matchHighlights?.length) {
+      return matchHighlights.slice(0, 3);
+    }
+
+    if (specialties.length) {
+      return specialties.slice(0, 3);
+    }
+
+    return ['High compatibility', 'Trusted by clients'];
+  }, [matchHighlights, specialties]);
+  const hiresSummary = hiresLabel ?? '50+ Hires';
 
   return (
     <article
-      className={`relative flex flex-row overflow-hidden rounded-[25px] border border-[#bfbfbf] bg-white shadow-sm ${
+      className={`relative flex flex-col gap-6 overflow-hidden rounded-[25px] border border-[#bfbfbf] bg-white shadow-sm lg:flex-row ${
         className ?? ''
       }`}
       data-testid="agent-profile-card"
@@ -135,16 +158,14 @@ export function AgentProfileCard({
 
         <div className="border-t border-[#f0f0f0]" />
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm font-medium text-[#262626]">50+ Hires</p>
-
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={onBookmarkToggle}
               aria-pressed={isBookmarked}
               aria-label={isBookmarked ? 'Remove from favorites' : 'Save to favorites'}
-              className="flex h-[33px] w-[33px] items-center justify-center rounded-full bg-[#f0f0f0] text-[#1d1d1d] transition"
+              className="flex h-[33px] w-[33px] items-center justify-center rounded-full bg-[#f0f0f0] text-[#1d1d1d] transition hover:bg-[#e5e5e5]"
             >
               <svg
                 aria-hidden="true"
@@ -171,10 +192,41 @@ export function AgentProfileCard({
         </div>
       </div>
 
-      <div
-        className="flex-none w-[156.93px] rounded-[25px] border border-[#BFBFBF]"
-        style={{ background: 'linear-gradient(219.54deg, #00224D 17.46%, #B60D0A 95.46%)' }}
-      />
+      <aside className="flex-none w-full rounded-[25px] border border-[#BFBFBF] bg-gradient-to-b from-[#01224d] to-[#b60d0a] p-6 lg:w-[200px]">
+        <div className="flex h-full flex-col items-center gap-5">
+          <CircularProgress
+            score={resolvedScore}
+            trackColor="rgba(255,255,255,0.15)"
+            progressColor="#fef3c7"
+          />
+
+          <div className="text-center">
+            <p className="text-xs uppercase tracking-wide text-white/70">Match Insight</p>
+            <h3 className="text-lg font-semibold text-white">Scorecard</h3>
+          </div>
+
+          <ul className="flex w-full flex-col gap-2">
+            {highlightItems.map((item, index) => (
+              <li key={`${item}-${index}`} className="flex items-start gap-2 text-sm text-white/80">
+                <svg
+                  className="mt-[2px] h-4 w-4 flex-shrink-0 text-emerald-300"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="leading-snug text-white/80">{item}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-auto w-full rounded-[18px] border border-white/30 bg-white/10 px-3 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white/90">
+            {hiresSummary}
+          </div>
+        </div>
+      </aside>
     </article>
   );
 }

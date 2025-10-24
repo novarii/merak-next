@@ -150,6 +150,12 @@ export default function ChatPage() {
                     hiresLabel={hiresLabel}
                     badges={badges}
                     isBookmarked={index === 0}
+                    matchScore={
+                      profile.success_rate !== null
+                        ? Math.round(profile.success_rate)
+                        : undefined
+                    }
+                    matchHighlights={specialties.slice(0, 3)}
                   />
                 );
               })}
