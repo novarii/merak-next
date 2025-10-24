@@ -1,3 +1,8 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { LandingChatbox } from '@/components/LandingChatbox';
+
 const GRID_IMAGE = '/assets/landing/grid-image.svg';
 const LOGO_IMAGE =
   'https://www.figma.com/api/mcp/asset/9c0e4fc9-1494-4244-87af-a8e32a8991af';
@@ -32,37 +37,69 @@ export default function LandingPage() {
               'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 180%)',
           }}
         >
-          <img
+          <Image
             alt=""
             src={GRID_IMAGE}
-            className="h-full w-full object-cover opacity-80 mix-blend-multiply"
-            loading="lazy"
+            fill
+            className="opacity-80 mix-blend-multiply object-cover"
+            priority
+            sizes="100vw"
           />
         </div>
 
         <header className="flex items-center justify-between py-4 md:py-6">
-          <a href="/" className="flex items-center">
-            <img
+          <Link href="/" className="flex items-center" aria-label="Merak home">
+            <Image
               alt="Merak"
               src={LOGO_IMAGE}
+              width={132}
+              height={54}
               className="h-[54px] w-[132px] object-contain"
-              loading="lazy"
+              priority
             />
-          </a>
+          </Link>
           <nav className="flex items-center gap-6 text-base font-semibold text-[#1d1d1d] sm:gap-10 sm:text-xl">
-            <a className="transition hover:text-slate-950" href="/marketplace">
+            <Link className="transition hover:text-slate-950" href="/marketplace">
               Marketplace
-            </a>
-            <a className="transition hover:text-slate-950" href="/about">
+            </Link>
+            <Link className="transition hover:text-slate-950" href="/about">
               About Us
-            </a>
-            <a className="transition hover:text-slate-950" href="/login">
+            </Link>
+            <Link className="transition hover:text-slate-950" href="/login">
               Log In
-            </a>
+            </Link>
           </nav>
         </header>
 
-        <div className="flex-1" />
+        <section className="flex flex-1 items-center py-12">
+          <div className="grid w-full gap-12 lg:grid-cols-[minmax(0,1fr)_520px] lg:items-center">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-3 rounded-full border border-white/40 bg-white/20 px-6 py-2 text-sm uppercase tracking-[0.3em] text-[#1d1d1d] shadow-sm backdrop-blur">
+                <span>Marketing Copilot</span>
+              </div>
+              <h1
+                className="max-w-2xl text-[#1d1d1d]"
+                style={{
+                  fontSize: 'var(--font-size-h1)',
+                  lineHeight: 1.05,
+                }}
+              >
+                Find the marketing experts you need, in seconds.
+              </h1>
+              <p
+                className="max-w-xl text-[#454545]"
+                style={{ fontSize: 'var(--font-size-body)', lineHeight: 1.5 }}
+              >
+                Chat with Merak to spin up entire campaigns, source vetted specialists, and manage
+                every deliverable without leaving the conversation.
+              </p>
+            </div>
+
+            <div className="flex justify-center lg:justify-end">
+              <LandingChatbox />
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );
