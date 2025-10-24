@@ -1,8 +1,10 @@
 "use client";
 
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const ICONS = {
   attach: {
@@ -41,16 +43,19 @@ const IconButton = ({ icon, accent = false }: IconButtonProps) => {
   return (
     <button
       type="button"
-      className={`relative flex size-[34px] items-center justify-center rounded-[20px] border border-white/20 p-1.5 shadow-[inset_0_0_2px_rgba(240,240,240,0.8)] backdrop-blur-md transition hover:border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${accent ? 'bg-gradient-to-r from-[rgba(182,13,10,0.8)] to-[rgba(1,34,77,0.8)] text-white' : 'bg-white/10 text-slate-900'}`}
+      className={`relative flex size-[34px] items-center justify-center rounded-[20px] border border-white/20 shadow-[inset_0_0_2px_rgba(240,240,240,0.8)] backdrop-blur-md transition hover:border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${accent ? 'bg-gradient-to-r from-[rgba(182,13,10,0.8)] to-[rgba(1,34,77,0.8)] text-white' : 'bg-white/10 text-slate-900'}`}
       style={{ WebkitBackdropFilter: 'blur(10px)' }}
       aria-label={alt}
     >
-      <Image alt="" src={src} width={24} height={24} />
+      <span className="flex h-6 w-6 items-center justify-center">
+        <Image alt="" src={src} width={16} height={16} className="h-4 w-4 object-contain" />
+      </span>
     </button>
   );
 };
 
 export const LandingChatbox = () => {
+  const router = useRouter();
   const [message, setMessage] = useState('');
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [typedLength, setTypedLength] = useState(0);
@@ -100,6 +105,20 @@ export const LandingChatbox = () => {
     setMessage(event.target.value);
   };
 
+  const handleSubmit = () => {
+    router.push('/login');
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      if (message.trim().length === 0) {
+        return;
+      }
+      handleSubmit();
+    }
+  };
+
   return (
     <div className="relative mx-auto w-full max-w-[720px]">
       <div
@@ -121,6 +140,7 @@ export const LandingChatbox = () => {
           placeholder={message ? undefined : placeholder}
           value={message}
           onChange={handleChange}
+          onKeyDown={handleKeyDown}
           autoComplete="off"
           spellCheck={false}
           aria-label="Chat prompt"
@@ -132,7 +152,17 @@ export const LandingChatbox = () => {
 
         <div className="absolute bottom-6 right-6 flex gap-3">
           <IconButton icon="headphones" />
-          <IconButton icon="send" accent />
+          <Link
+            href="/login"
+            className="relative flex size-[34px] items-center justify-center rounded-[20px] border border-white/20 shadow-[inset_0_0_2px_rgba(240,240,240,0.8)] backdrop-blur-md transition hover:border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white bg-gradient-to-r from-[rgba(182,13,10,0.8)] to-[rgba(1,34,77,0.8)] text-white"
+            style={{ WebkitBackdropFilter: 'blur(10px)' }}
+            aria-label="Send message"
+            onClick={handleSubmit}
+          >
+            <span className="flex h-6 w-6 items-center justify-center">
+              <Image alt="" src={ICONS.send.src} width={16} height={16} className="h-4 w-4 object-contain" />
+            </span>
+          </Link>
         </div>
       </div>
     </div>
