@@ -202,6 +202,7 @@ export function AgentProfileCard({
             score={resolvedScore}
             trackColor="rgba(255,255,255,0.15)"
             progressColor="#fef3c7"
+            strokeWidth={6}
           />
           <div className="text-center">
             <h3 className="text-lg font-semibold text-white/90">Merak's Score</h3>
