@@ -41,7 +41,6 @@ export function AgentProfileCard({
   specialties,
   priceLabel,
   description,
-  hiresLabel,
   avatarUrl,
   badges = [],
   isBookmarked = false,
@@ -59,7 +58,7 @@ export function AgentProfileCard({
       }`}
       data-testid="agent-profile-card"
     >
-      <div className="flex flex-1 flex-col gap-6 p-6">
+      <div className="flex flex-1 flex-col gap-2 p-6">
         <div className="flex flex-col items-stretch gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
           <div className="flex flex-1 flex-col items-stretch gap-4 md:flex-row md:items-stretch">
             <div className="relative h-[78px] w-[78px] flex-shrink-0 overflow-hidden rounded-[15px] bg-[#d9d9d9]">
@@ -89,7 +88,7 @@ export function AgentProfileCard({
               ) : null}
 
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-6">
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-1">
                   <h3 className="text-lg font-medium text-[#1d1d1d]">{name}</h3>
                   <p className="text-sm text-[#1d1d1d]">{creator}</p>
                 </div>
@@ -129,13 +128,7 @@ export function AgentProfileCard({
         <div className="border-t border-[#f0f0f0]" />
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          {hiresLabel ? (
-            <p className="text-[11px] font-normal normal-case tracking-wide text-[#8c8c8c]">
-              {hiresLabel}
-            </p>
-          ) : (
-            <span />
-          )}
+          <p className="text-sm font-medium text-[#262626]">50+ Hires</p>
 
           <div className="flex items-center gap-3">
             <button
