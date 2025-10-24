@@ -106,10 +106,6 @@ export function AgentProfileView({ profile, onBack }: AgentProfileViewProps) {
                 {profile.tagline ? (
                   <p className="text-lg font-medium text-[#344e71]">{profile.tagline}</p>
                 ) : null}
-                <p className="text-sm text-[#344e71] opacity-80">{agentLabel}</p>
-                <p className="text-sm text-[#011f46]/70">
-                  by {profile.developer ?? 'Independent Agent'}
-                </p>
               </div>
             </div>
 

@@ -48,7 +48,6 @@ export function AgentListView({ profiles, loading, error, onViewDetailsClick }: 
             formatLabel(profile.agent_type),
             profile.industry ?? null,
             profile.languages[0] ?? null,
-            profile.tagline ?? null,
           ].filter((value): value is string => Boolean(value));
 
           const rotationBadge = BADGE_ROTATION[index % BADGE_ROTATION.length];
