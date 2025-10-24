@@ -54,10 +54,6 @@ export function AgentProfileView({ profile, onBack }: AgentProfileViewProps) {
     profile.card_description ?? 'This agent delivers tailored outcomes for your workflows.';
   const description =
     profile.profile_description ?? 'This agent has not added a longer description yet.';
-  const highlights = profile.highlights.length
-    ? profile.highlights
-    : ['High satisfaction from clients', 'Deep domain expertise', 'Responsive collaboration'];
-
   const demoId = extractYouTubeId(profile.demo_link ?? null);
   const videoSrc = demoId ? `https://www.youtube.com/embed/${demoId}` : null;
 
@@ -177,43 +173,9 @@ export function AgentProfileView({ profile, onBack }: AgentProfileViewProps) {
           <p className="text-base leading-relaxed text-[#011837]/80">{description}</p>
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_260px]">
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-[#bfbfbf] bg-white p-6 shadow-sm">
-              <h4 className="text-lg font-semibold text-[#01224d]">Highlights</h4>
-              <ul className="mt-4 space-y-2 text-sm text-[#011f46]/75">
-                {highlights.map((item) => (
-                  <li key={item}>• {item}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="rounded-2xl border border-[#bfbfbf] bg-white p-6 shadow-sm">
-              <h4 className="text-lg font-semibold text-[#01224d]">Quick Stats</h4>
-              <ul className="mt-4 space-y-2 text-sm text-[#011f46]/75">
-                <li>
-                  <span className="font-semibold text-[#01224d]">Monthly Rate:</span> {priceLabel}
-                </li>
-                <li>
-                  <span className="font-semibold text-[#01224d]">Success Rate:</span>{' '}
-                  {profile.success_rate !== null ? `${profile.success_rate.toFixed(0)}%` : 'On request'}
-                </li>
-                <li>
-                  <span className="font-semibold text-[#01224d]">Experience:</span>{' '}
-                  {profile.experience_years !== null ? `${profile.experience_years}+ years` : 'On request'}
-                </li>
-              </ul>
-            </div>
-          </div>
-
+        <section className="grid gap-6">
           <div className="flex flex-col justify-between rounded-2xl border border-[#01224d]/10 bg-[#f5f5f5]/90 p-6">
-            <div className="space-y-2">
-              <h4 className="text-lg font-semibold text-[#01224d]">Why this agent?</h4>
-              <p className="text-sm text-[#011f46]/75">
-                Seamless support for your workflows with expertise in {agentLabel.toLowerCase()} and {profile.industry ?? 'multiple industries'}.
-              </p>
-            </div>
-            <div className="mt-6 rounded-xl bg-[#01224d] px-5 py-4 text-center text-white shadow-md">
+            <div className="rounded-xl bg-[#01224d] px-5 py-4 text-center text-white shadow-md">
               <button type="button" className="text-base font-semibold">Hire Now!</button>
             </div>
           </div>
