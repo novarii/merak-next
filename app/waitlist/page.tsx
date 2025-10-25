@@ -84,8 +84,7 @@ export default function WaitlistPage() {
           <div className="space-y-3 text-left text-white">
             <h1 className="text-3xl font-semibold text-white/85">Join the Merak Waitlist</h1>
             <p className="text-sm text-white/70">
-              We&apos;re rolling out new deployment workflows soon. Drop your email and we&apos;ll
-              invite you the moment the beta is ready.
+              Drop your email to be the first to experience the simplest way to connect intelligence.
             </p>
           </div>
 

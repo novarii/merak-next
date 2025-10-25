@@ -3,7 +3,6 @@
 import type { ChangeEvent, KeyboardEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 const ICONS = {
@@ -129,8 +128,18 @@ export const LandingChatbox = ({ isAuthenticated = false }: LandingChatboxProps)
   };
 
   const handleSubmit = () => {
-    const destination = isAuthenticated ? '/chat' : '/login';
-    router.push(destination);
+    const trimmedMessage = message.trim();
+    if (!trimmedMessage) {
+      return;
+    }
+
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+
+    const params = new URLSearchParams({ prompt: trimmedMessage });
+    router.push(`/chat?${params.toString()}`);
   };
 
   const handleQuickPrompt = (prompt: string) => {
@@ -181,8 +190,8 @@ export const LandingChatbox = ({ isAuthenticated = false }: LandingChatboxProps)
 
           <div className="absolute bottom-6 right-6 flex gap-3">
             <IconButton icon="headphones" />
-            <Link
-              href={isAuthenticated ? '/chat' : '/login'}
+            <button
+              type="button"
               className="relative flex size-[34px] items-center justify-center rounded-[20px] border border-white/20 shadow-[inset_0_0_2px_rgba(240,240,240,0.8)] backdrop-blur-md transition hover:border-white/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white bg-gradient-to-r from-[rgba(182,13,10,0.8)] to-[rgba(1,34,77,0.8)] text-white"
               style={{ WebkitBackdropFilter: 'blur(10px)' }}
               aria-label="Send message"
@@ -191,7 +200,7 @@ export const LandingChatbox = ({ isAuthenticated = false }: LandingChatboxProps)
               <span className="flex h-6 w-6 items-center justify-center">
                 <Image alt="" src={ICONS.send.src} width={16} height={16} className="h-4 w-4 object-contain" />
               </span>
-            </Link>
+            </button>
           </div>
         </div>
 

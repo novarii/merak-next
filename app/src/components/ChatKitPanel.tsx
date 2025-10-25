@@ -59,11 +59,15 @@ type ChatKitPanelProps = {
     error?: string;
   }>;
   onThreadChange?: () => void;
+  initialPrompt?: string | null;
+  onInitialPromptConsumed?: () => void;
 };
 
 export function ChatKitPanel({
   onProfilesLoad,
   onThreadChange,
+  initialPrompt = null,
+  onInitialPromptConsumed,
 }: ChatKitPanelProps) {
   const [composerPlaceholder, setComposerPlaceholder] = useState(PLACEHOLDER_INPUT);
   const [supabaseClient, setSupabaseClient] = useState<SupabaseClient | null>(null);
@@ -76,6 +80,7 @@ export function ChatKitPanel({
   const [threadError, setThreadError] = useState<string | null>(null);
   const threadAppliedRef = useRef<string | null | undefined>(undefined);
   const userIdRef = useRef<string | null>(null);
+  const [pendingPrompt, setPendingPrompt] = useState<string | null>(null);
 
   const BUSY_PLACEHOLDER = 'Hang tight, the assistant is responding…';
 
@@ -296,6 +301,57 @@ export function ChatKitPanel({
 
   const canRenderChatKit =
     !!supabaseClient && !!userId && threadReady && !supabaseInitError && sessionResolved;
+
+  useEffect(() => {
+    if (!initialPrompt) {
+      return;
+    }
+    setPendingPrompt(initialPrompt);
+  }, [initialPrompt]);
+
+  useEffect(() => {
+    if (!pendingPrompt) {
+      return;
+    }
+
+    if (!canRenderChatKit || !chatkit.ref.current) {
+      return;
+    }
+
+    const text = pendingPrompt.trim();
+    setPendingPrompt(null);
+    onInitialPromptConsumed?.();
+
+    if (!text) {
+      return;
+    }
+
+    let isActive = true;
+
+    const sendPrompt = async () => {
+      try {
+        await chatkit.setComposerValue({ text });
+        await chatkit.sendUserMessage({ text, newThread: true });
+      } catch (error) {
+        console.error('Unable to send initial prompt from landing page', error);
+        if (!isActive) {
+          return;
+        }
+
+        try {
+          await chatkit.setComposerValue({ text });
+        } catch (composerError) {
+          console.error('Unable to set composer value after initial prompt failure', composerError);
+        }
+      }
+    };
+
+    void sendPrompt();
+
+    return () => {
+      isActive = false;
+    };
+  }, [pendingPrompt, canRenderChatKit, chatkit, onInitialPromptConsumed]);
 
   useEffect(() => {
     if (!canRenderChatKit) {

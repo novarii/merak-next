@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { ChatKitPanel } from '@/components/ChatKitPanel';
 import { AgentListView } from '@/components/AgentListView';
@@ -11,10 +12,30 @@ import { deriveAccountNavigation } from '@/lib/accountNavigation';
 import { getSupabaseBrowserClient } from '@/lib/supabaseBrowserClient';
 
 export default function ChatPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const { profiles, loading, error, loadProfiles, clearProfiles } = useAgentProfiles();
 
   const [accountNav, setAccountNav] = useState(() => deriveAccountNavigation(null));
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
+  const [landingPrompt, setLandingPrompt] = useState<string | null>(null);
+
+  useEffect(() => {
+    const promptParam = searchParams.get('prompt');
+    if (!promptParam) {
+      return;
+    }
+
+    const trimmedPrompt = promptParam.trim();
+    if (trimmedPrompt) {
+      setLandingPrompt(trimmedPrompt);
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('prompt');
+    const nextQuery = params.toString();
+    router.replace(nextQuery ? `/chat?${nextQuery}` : '/chat', { scroll: false });
+  }, [router, searchParams]);
 
   useEffect(() => {
     let isMounted = true;
@@ -86,6 +107,10 @@ export default function ChatPage() {
     [loadProfiles, selectedAgentId],
   );
 
+  const handleInitialPromptConsumed = useCallback(() => {
+    setLandingPrompt(null);
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col bg-[#f5f5f5]">
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 pb-10">
@@ -99,6 +124,8 @@ export default function ChatPage() {
           <aside className="w-full max-w-md flex-none">
             <div className="sticky top-10 h-[88vh] overflow-hidden rounded-3xl border border-slate-200/60 bg-white shadow-xl ring-1 ring-slate-200/60">
               <ChatKitPanel
+                initialPrompt={landingPrompt}
+                onInitialPromptConsumed={handleInitialPromptConsumed}
                 onProfilesLoad={handleProfilesLoad}
                 onThreadChange={handleThreadChange}
               />
