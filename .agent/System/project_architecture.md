@@ -56,6 +56,7 @@ Deliver a Supabase-authenticated marketing assistant where users converse with O
 - **Redis (backend)**: Holds ChatKit conversation state, namespaced by Supabase `user_id` and `thread_id`. The frontend does not talk to Redis directly but ensures consistent identifiers so the backend can scope data correctly.
 
 ## Environment & Configuration
+- `NEXT_PUBLIC_SITE_URL` (client): Base site URL used for Supabase auth callbacks; set to the deployed domain (e.g., `https://app.merak.ai`).
 - `BACKEND_URL` (server): Base URL for the FastAPI (or compatible) ChatKit backend proxy.
 - `NEXT_PUBLIC_CHATKIT_API_URL`, `NEXT_PUBLIC_CHATKIT_API_DOMAIN_KEY` (client): Optional overrides for ChatKit SDK configuration, defaulting to `/chatkit` and `domain_pk_localhost_dev`.
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (client): Required for browser auth.

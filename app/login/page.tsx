@@ -10,6 +10,23 @@ const GRID_IMAGE = '/assets/landing/grid-image.svg';
 const LOGO_IMAGE =
   'https://www.figma.com/api/mcp/asset/9c0e4fc9-1494-4244-87af-a8e32a8991af';
 
+const AUTH_CALLBACK_PATH = '/auth/callback';
+
+const resolveAuthRedirectUrl = () => {
+  const envSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+  if (envSiteUrl) {
+    const normalizedEnvUrl = envSiteUrl.replace(/\/+$/, '');
+    return `${normalizedEnvUrl}${AUTH_CALLBACK_PATH}`;
+  }
+
+  if (typeof window !== 'undefined') {
+    return `${window.location.origin}${AUTH_CALLBACK_PATH}`;
+  }
+
+  return AUTH_CALLBACK_PATH;
+};
+
 export default function LoginPage() {
   const supabase = getSupabaseBrowserClient();
   const [email, setEmail] = useState('');
@@ -30,6 +47,8 @@ export default function LoginPage() {
     [view],
   );
 
+  const authRedirectUrl = useMemo(() => resolveAuthRedirectUrl(), []);
+
   const requestMagicLink = async () => {
     if (!email) {
       setError('Enter your email address to continue.');
@@ -44,7 +63,7 @@ export default function LoginPage() {
       email,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: authRedirectUrl,
       },
     });
 
@@ -70,7 +89,7 @@ export default function LoginPage() {
     const { error: googleError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: authRedirectUrl,
       },
     });
 
