@@ -2,9 +2,16 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import './globals.css';
 
+const LOGO_IMAGE = '/merak-logo.svg';
+
 export const metadata: Metadata = {
-  title: 'Marketing Assistant',
-  description: 'AI-powered marketing assistant',
+  title: 'Merak',
+  description: 'Find, compare, and connect with the tools that fit you.',
+  applicationName: 'Merak',
+  icons: {
+    icon: LOGO_IMAGE,
+    shortcut: LOGO_IMAGE,
+  },
 };
 
 export default function RootLayout({
