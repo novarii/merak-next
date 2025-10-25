@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { ChatKitPanel } from '@/components/ChatKitPanel';
@@ -11,7 +11,7 @@ import { useAgentProfiles } from '@/hooks/useAgentProfiles';
 import { deriveAccountNavigation } from '@/lib/accountNavigation';
 import { getSupabaseBrowserClient } from '@/lib/supabaseBrowserClient';
 
-export default function ChatPage() {
+function ChatPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { profiles, loading, error, loadProfiles, clearProfiles } = useAgentProfiles();
@@ -148,5 +148,19 @@ export default function ChatPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#f5f5f5]">
+          <span className="text-slate-600">Loading chat…</span>
+        </div>
+      }
+    >
+      <ChatPageContent />
+    </Suspense>
   );
 }

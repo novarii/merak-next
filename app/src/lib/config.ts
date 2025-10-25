@@ -1,4 +1,4 @@
-import { StartScreenPrompt } from '@openai/chatkit';
+import type { StartScreenPrompt } from '@openai/chatkit';
 
 export const CHATKIT_API_URL =
   process.env.NEXT_PUBLIC_CHATKIT_API_URL ?? '/chatkit';

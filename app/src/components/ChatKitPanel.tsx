@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ChatKitOptions } from '@openai/chatkit';
 import { ChatKit, useChatKit } from '@openai/chatkit-react';
+import type { UseChatKitOptions } from '@openai/chatkit-react';
 import type { Session, SupabaseClient } from '@supabase/supabase-js';
 import {
   CHATKIT_API_URL,
@@ -62,6 +62,16 @@ type ChatKitPanelProps = {
   initialPrompt?: string | null;
   onInitialPromptConsumed?: () => void;
 };
+
+type ClientToolInvocation = Parameters<
+  NonNullable<UseChatKitOptions['onClientTool']>
+>[0];
+
+type ThreadChangeEvent = Parameters<
+  NonNullable<UseChatKitOptions['onThreadChange']>
+>[0];
+
+type ErrorEvent = Parameters<NonNullable<UseChatKitOptions['onError']>>[0];
 
 export function ChatKitPanel({
   onProfilesLoad,
@@ -206,7 +216,7 @@ export function ChatKitPanel({
     [supabaseClient],
   );
 
-  const chatKitOptions: ChatKitOptions = useMemo(
+  const chatKitOptions: UseChatKitOptions = useMemo(
     () => ({
       api: {
         url: CHATKIT_API_URL,
@@ -258,7 +268,7 @@ export function ChatKitPanel({
   const chatkit = useChatKit({
     ...chatKitOptions,
     header: {},
-    onClientTool: async (invocation) => {
+    onClientTool: async (invocation: ClientToolInvocation) => {
       if (invocation.name === 'display_agent_profiles') {
         const agentIdsParam = (invocation.params as Record<string, unknown>).agent_ids;
         const agentIds = Array.isArray(agentIdsParam)
@@ -274,7 +284,7 @@ export function ChatKitPanel({
     onResponseEnd: () => {
       setBusy(false);
     },
-    onThreadChange: ({ threadId: nextThreadId }) => {
+    onThreadChange: ({ threadId: nextThreadId }: ThreadChangeEvent) => {
       setBusy(false);
       setThreadError(null);
 
@@ -292,7 +302,7 @@ export function ChatKitPanel({
 
       onThreadChange?.();
     },
-    onError: ({ error }) => {
+    onError: ({ error }: ErrorEvent) => {
       console.error('ChatKit error', error);
       setBusy(false);
       setThreadError('The chat encountered an error. Please try again.');
