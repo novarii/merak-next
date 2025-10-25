@@ -71,8 +71,6 @@ export function AgentProfileCard({
 
     return ['High compatibility', 'Trusted by clients'];
   }, [matchHighlights, specialties]);
-  const hiresSummary = '50+ Hires';
-
   return (
     <article
       className={`relative flex flex-col gap-6 overflow-hidden rounded-[25px] border border-[#bfbfbf] bg-white shadow-sm lg:flex-row ${
@@ -164,7 +162,7 @@ export function AgentProfileCard({
         <div className="border-t border-[#f0f0f0]" />
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs font-semibold tracking-wide text-[#262626]">{hiresSummary}</p>
+          <p className="text-xs font-semibold tracking-wide text-[#262626]">50+ Hires</p>
 
           <div className="flex items-center gap-3">
             <button
