@@ -133,7 +133,14 @@ export async function POST(req: NextRequest) {
         : [],
     }));
 
-    return Response.json({ profiles });
+    const sortOrder = new Map(uniqueIds.map((id, index) => [id, index]));
+    const orderedProfiles = profiles.sort((a, b) => {
+      const aIndex = sortOrder.get(a.id) ?? Number.POSITIVE_INFINITY;
+      const bIndex = sortOrder.get(b.id) ?? Number.POSITIVE_INFINITY;
+      return aIndex - bIndex;
+    });
+
+    return Response.json({ profiles: orderedProfiles });
   } catch (err) {
     console.error('Unexpected agent profile lookup error', err);
     return Response.json({ error: 'Failed to load agent profiles' }, { status: 500 });
