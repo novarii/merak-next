@@ -21,10 +21,10 @@ const ICONS = {
 } as const;
 
 const typewriterPhrases = [
-  'hire your new SDR',
-  'hire your new data analyst',
-  'hire your new customer success agent',
-  'hire your new marketing automation specialist',
+  'deploy your new SDR',
+  'deploy your new data analyst',
+  'deploy your new customer success agent',
+  'deploy your new marketing automation specialist',
 ];
 
 const promptPrefix = 'Ask Merak to ';
